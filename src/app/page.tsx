@@ -29,10 +29,10 @@ export default function Home() {
               Load Booking on Amazon Relay</h1>
             <p
               className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Fasty
-              isn't a simple browser extension— it's a robust software platform that seamlessly integrates with Amazon
+              isn&apos;t a simple browser extension— it&apos;s a robust software platform that seamlessly integrates with Amazon
               Relay. Our system is built to automate your load booking process based on your filters. With the capacity
               to book loads 10x faster than our competitors, we are the game-changer in the industry.</p>
-            <div className="justify-center mt-4 flex">
+            <div className="justify-center mt-4 flex max-h-16">
               <input
                 id="email"
                 type="email"
@@ -40,18 +40,20 @@ export default function Home() {
                 required
                 placeholder="Your Email"
               />
-              <a
-                className="rounded-md  cursor-pointer tracking-wider text-xl
+              <button
+                className="rounded-md  cursor-pointer tracking-wider text-lg font-semibold
       inline-table
       w-full
       items-center
-      p-4
+      p-2
       text-center bg-[#712023] text-white
+      max-h-16
+      uppercase
     "
 
               >
                 Get Early Access
-              </a>
+              </button>
             </div>
             {/*<div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">*/}
             {/*  <a href="https://chrome.google.com/webstore/detail/kcmjhdaokiedcophgjlhmgchlbppmian"*/}
@@ -78,7 +80,7 @@ export default function Home() {
               <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Triple your
                 revenue</h2>
               <p className="mb-8 font-light lg:text-xl">Where others see a load board, we see opportunity - an
-                opportunity to streamline, simplify and accelerate the load booking process. Our software doesn't just
+                opportunity to streamline, simplify and accelerate the load booking process. Our software doesn&apos;t just
                 make booking easier, it makes it faster and more accurate. This speed and precision let you book more
                 loads, enabling you to grow your business like never before.</p>
 
@@ -139,12 +141,12 @@ export default function Home() {
                 fill="currentColor"/>
             </svg>
             <blockquote>
-              <p className="text-xl font-medium text-gray-900 md:text-2xl dark:text-white">"Switching to Fasty has been
-                the best decision we've made. Their revolutionary booking platform skyrocketed our efficiency, enabling
-                us to triple our revenue in just a month. The impact was so immense that we're now in the process of
-                hiring more drivers just to keep up with the rapid pace of load booking facilitated by Fasty. If you're
+              <p className="text-xl font-medium text-gray-900 md:text-2xl dark:text-white">&rdquo;Switching to Fasty has been
+                the best decision we&apos;ve made. Their revolutionary booking platform skyrocketed our efficiency, enabling
+                us to triple our revenue in just a month. The impact was so immense that we&apos;re now in the process of
+                hiring more drivers just to keep up with the rapid pace of load booking facilitated by Fasty. If you&apos;re
                 in search of an innovative and robust tool to streamline your load booking and boost your growth, Fasty
-                is the ultimate solution." </p>
+                is the ultimate solution.&rdquo; </p>
             </blockquote>
             <figcaption className="flex items-center justify-center mt-6 space-x-3">
               {/*<img className="w-6 h-6 rounded-full"*/}
@@ -169,7 +171,7 @@ export default function Home() {
             <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Say goodbye to load board
               and hello to streamlined booking with Fasty. Try it today and see the difference it can make for
               your business.</p>
-            <div className="justify-center mt-4 flex">
+            <div className="justify-center mt-4 flex max-h-12">
               <input
                 id="email"
                 type="email"
@@ -177,18 +179,20 @@ export default function Home() {
                 required
                 placeholder="Your Email"
               />
-              <a
-                className="rounded-md  cursor-pointer tracking-wider text-xl
+              <button
+                className="rounded-md  cursor-pointer tracking-wider text-lg font-semibold
       inline-table
       w-full
       items-center
-      p-4
+      p-2
       text-center bg-[#712023] text-white
+      max-h-12
+      uppercase
     "
 
               >
                 Get Early Access
-              </a>
+              </button>
             </div>
           </div>
         </div>
