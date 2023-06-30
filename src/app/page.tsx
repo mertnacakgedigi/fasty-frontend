@@ -171,7 +171,7 @@ export default function Home() {
             <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Say goodbye to load board
               and hello to streamlined booking with Fasty. Try it today and see the difference it can make for
               your business.</p>
-            <div className="justify-center mt-4 flex max-h-12">
+            <div className="justify-center mt-4 flex max-h-16">
               <input
                 id="email"
                 type="email"
@@ -186,7 +186,7 @@ export default function Home() {
       items-center
       p-2
       text-center bg-[#712023] text-white
-      max-h-12
+      max-h-16
       uppercase
     "
 
