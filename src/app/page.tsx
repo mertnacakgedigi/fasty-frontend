@@ -29,23 +29,25 @@ export default function Home() {
               Load Booking on Amazon Relay</h1>
             <p
               className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Fasty
-              isn&apos;t a simple browser extension— it&apos;s a robust software platform that seamlessly integrates with Amazon
+              isn&apos;t a simple browser extension— it&apos;s a robust software platform that seamlessly integrates
+              with Amazon
               Relay. Our system is built to automate your load booking process based on your filters. With the capacity
               to book loads 10x faster than our competitors, we are the game-changer in the industry.</p>
-            <div className="justify-center mt-4 flex max-h-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 id="email"
                 type="email"
-                className="block w-full border-2 rounded-md p-4 border-r-0"
+                className="w-full border-2 rounded-md p-4"
                 required
-                placeholder="Your Email"
+                placeholder="Enter your email"
               />
               <button
-                className="rounded-md  cursor-pointer tracking-wider text-lg font-semibold
+                className="cursor-pointer tracking-wider text-lg font-semibold
       inline-table
       w-full
       items-center
-      p-2
+      p-4
+      rounded-md
       text-center bg-[#712023] text-white
       max-h-16
       uppercase
@@ -62,7 +64,7 @@ export default function Home() {
             {/*  </a>*/}
             {/*</div>*/}
           </div>
-          <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
+          <div className="lg:mt-0 lg:col-span-5 lg:flex">
             <img src="./images/welcome.gif" alt="hero image"/>
           </div>
         </div>
@@ -73,14 +75,15 @@ export default function Home() {
 
           <div className="items-center gap-8 lg:grid lg:grid-cols-2 xl:gap-16">
             <div className="w-full mb-4 rounded-lg lg:mb-0 lg:flex">
-              <img src="./images/performance.gif" width="100%" style={{height: '300px'}}/>
+              <img src="./images/performance.png" width="100%" style={{height: '300px'}}/>
 
             </div>
             <div className="text-gray-500 sm:text-lg dark:text-gray-400">
               <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Triple your
                 revenue</h2>
               <p className="mb-8 font-light lg:text-xl">Where others see a load board, we see opportunity - an
-                opportunity to streamline, simplify and accelerate the load booking process. Our software doesn&apos;t just
+                opportunity to streamline, simplify and accelerate the load booking process. Our software doesn&apos;t
+                just
                 make booking easier, it makes it faster and more accurate. This speed and precision let you book more
                 loads, enabling you to grow your business like never before.</p>
 
@@ -94,7 +97,8 @@ export default function Home() {
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                           clipRule="evenodd"></path>
                   </svg>
-                  <span className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Speed:</strong> Our software books loads 10x faster than our competitors. </span>
+                  <span
+                    className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Speed:</strong> Our software books loads 10x faster than our competitors. </span>
                 </li>
                 <li className="flex space-x-3">
 
@@ -114,7 +118,8 @@ export default function Home() {
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                           clipRule="evenodd"></path>
                   </svg>
-                  <span className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Customization:</strong> Our system adapts to your individual needs and preferences.</span>
+                  <span
+                    className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Customization:</strong> Our system adapts to your individual needs and preferences.</span>
                 </li>
                 <li className="flex space-x-3">
 
@@ -124,7 +129,8 @@ export default function Home() {
                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                           clipRule="evenodd"></path>
                   </svg>
-                  <span className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Growth:</strong> With faster booking, you can accept more loads, leading to more profit.</span>
+                  <span
+                    className="text-base font-medium leading-tight text-gray-900 dark:text-white"><strong>Growth:</strong> With faster booking, you can accept more loads, leading to more profit.</span>
                 </li>
               </ul>
             </div>
@@ -141,10 +147,14 @@ export default function Home() {
                 fill="currentColor"/>
             </svg>
             <blockquote>
-              <p className="text-xl font-medium text-gray-900 md:text-2xl dark:text-white">&rdquo;Switching to Fasty has been
-                the best decision we&apos;ve made. Their revolutionary booking platform skyrocketed our efficiency, enabling
-                us to triple our revenue in just a month. The impact was so immense that we&apos;re now in the process of
-                hiring more drivers just to keep up with the rapid pace of load booking facilitated by Fasty. If you&apos;re
+              <p className="text-xl font-medium text-gray-900 md:text-2xl dark:text-white">&rdquo;Switching to Fasty has
+                been
+                the best decision we&apos;ve made. Their revolutionary booking platform skyrocketed our efficiency,
+                enabling
+                us to triple our revenue in just a month. The impact was so immense that we&apos;re now in the process
+                of
+                hiring more drivers just to keep up with the rapid pace of load booking facilitated by Fasty. If
+                you&apos;re
                 in search of an innovative and robust tool to streamline your load booking and boost your growth, Fasty
                 is the ultimate solution.&rdquo; </p>
             </blockquote>
@@ -171,20 +181,21 @@ export default function Home() {
             <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Say goodbye to load board
               and hello to streamlined booking with Fasty. Try it today and see the difference it can make for
               your business.</p>
-            <div className="justify-center mt-4 flex max-h-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 id="email"
                 type="email"
-                className="block w-full border-2 rounded-md p-4 border-r-0"
+                className="w-full border-2 rounded-md p-4"
                 required
-                placeholder="Your Email"
+                placeholder="Enter your email"
               />
               <button
-                className="rounded-md  cursor-pointer tracking-wider text-lg font-semibold
+                className="cursor-pointer tracking-wider text-lg font-semibold
       inline-table
       w-full
       items-center
-      p-2
+      p-4
+      rounded-md
       text-center bg-[#712023] text-white
       max-h-16
       uppercase
