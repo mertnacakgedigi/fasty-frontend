@@ -12,9 +12,9 @@ function classNames(...classes: string[]) {
 
 interface IProps {
   origin: IOriginCity | null
-  updateFilterPayload: (key:keyof IFilterPayload, val: any) => void
+  onChangeFilterPayload: (key:keyof IFilterPayload, val: any) => void
 }
-export default function SearchSingleCity({origin, updateFilterPayload}: IProps) {
+export default function SearchSingleCity({origin, onChangeFilterPayload}: IProps) {
   console.log({origin})
   const [query, setQuery] = useState('')
   const [selectedCity, setSelectedCity] = useState<IOriginCity | null>(origin)
@@ -50,10 +50,10 @@ export default function SearchSingleCity({origin, updateFilterPayload}: IProps) 
       displayValue: city.name + ", " + city.stateCode
     }
 
-    updateFilterPayload("originCity", origin)
-    updateFilterPayload("startCityName", origin.name)
-    updateFilterPayload("startCityStateCode", origin.stateCode)
-    updateFilterPayload("startCityDisplayValue", origin.name + ", " + origin.stateCode)
+    onChangeFilterPayload("originCity", origin)
+    onChangeFilterPayload("startCityName", origin.name)
+    onChangeFilterPayload("startCityStateCode", origin.stateCode)
+    onChangeFilterPayload("startCityDisplayValue", origin.name + ", " + origin.stateCode)
 
 
     // Clear the query after selection

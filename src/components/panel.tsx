@@ -1,7 +1,7 @@
 import {Fragment, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
-import DateTimePicker from "@/components/datepicker";
+import DateTimePicker from "@/components/date-picker";
 import SingleSelect from "@/components/single-select";
 import MultiSelect from "@/components/multi-select";
 import SearchSingleCity from "@/components/search-single-city";
@@ -132,7 +132,7 @@ export default function Panel({open, setOpen,selectedFilter}: IProps) {
                                   Origin
                                 </label>
                                 <div className="mt-2">
-                                  <SearchSingleCity origin={filter.payload.originCity} updateFilterPayload={handleChangeFilterPayload} />
+                                  <SearchSingleCity origin={filter.payload.originCity} onChangeFilterPayload={handleChangeFilterPayload} />
                                 </div>
                               </div>
 
@@ -166,7 +166,7 @@ export default function Panel({open, setOpen,selectedFilter}: IProps) {
                                   Start Date & Time
                                 </label>
                                 <div className="mt-2">
-                                  <DateTimePicker/>
+                                  <DateTimePicker date={filter.payload.startDate} onChangeFilterPayload={handleChangeFilterPayload} type='start'/>
                                 </div>
                               </div>
                               <div className="sm:col-span-3">
@@ -175,7 +175,7 @@ export default function Panel({open, setOpen,selectedFilter}: IProps) {
                                   End Date & Time
                                 </label>
                                 <div className="mt-2">
-                                  <DateTimePicker/>
+                                  <DateTimePicker date={filter.payload.endDate} onChangeFilterPayload={handleChangeFilterPayload} type='end'/>
                                 </div>
                               </div>
                               <div className="sm:col-span-2">
