@@ -18,7 +18,6 @@ function classNames(...classes: string[]) {
 
 export default function SingleSelect() {
   const [selected, setSelected] = useState(options[0])
-  console.log({selected })
 
   return (
     <Listbox value={selected} onChange={setSelected}>

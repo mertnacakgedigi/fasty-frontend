@@ -2,21 +2,64 @@ import React, {useState} from 'react';
 import {CheckIcon, ChevronUpDownIcon} from '@heroicons/react/20/solid';
 import {Combobox} from '@headlessui/react';
 import _ from 'lodash'
-import {ICity} from '@/types'
+import {ICity, IFilterPayload, IOriginCity, IOriginRelay} from '@/types'
+import {formatCityName} from "@/utils/helper";
 
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SearchSingleCity() {
+interface IProps {
+  origin: IOriginCity | null
+  updateFilterPayload: (key:keyof IFilterPayload, val: any) => void
+}
+export default function SearchSingleCity({origin, updateFilterPayload}: IProps) {
+  console.log({origin})
   const [query, setQuery] = useState('')
-  const [selectedCity, setSelectedCity] = useState<ICity | null>()
+  const [selectedCity, setSelectedCity] = useState<IOriginCity | null>(origin)
   const [loading, setLoading] = useState(false)
-  const [filteredCities, setFilteredCities] = useState<ICity[]>([])
+  const [filteredCities, setFilteredCities] = useState<IOriginCity[]>([])
 
 
   console.log({selectedCity})
+
+  const handleSelectCity = (city: ICity) => {
+
+    console.log({city})
+
+
+    setSelectedCity(city)
+    // "name": "BAKERSFIELD",
+//   "latitude": 35.35289,
+//   "longitude": -119.035333,
+//   "stateCode": "CA",
+//   "uniqueKey": "35.35289BAKERSFIELD, CA",
+//   "isAnywhere": false,
+//   "isCityLive": false,
+//   "displayValue": "BAKERSFIELD, CA"
+
+    const origin: IOriginRelay = {
+      name: city.name.toUpperCase(),
+      latitude: city.latitude,
+      longitude: city.longitude,
+      stateCode: city.stateCode,
+      uniqueKey: city.latitude + city.name,
+      isAnywhere: false,
+      isCityLive: false,
+      displayValue: city.name + ", " + city.stateCode
+    }
+
+    updateFilterPayload("originCity", origin)
+    updateFilterPayload("startCityName", origin.name)
+    updateFilterPayload("startCityStateCode", origin.stateCode)
+    updateFilterPayload("startCityDisplayValue", origin.name + ", " + origin.stateCode)
+
+
+    // Clear the query after selection
+    setFilteredCities([])
+    setQuery('')
+  }
 
 
   const fetchCities = _.debounce(async (value: string) => {
@@ -41,12 +84,12 @@ export default function SearchSingleCity() {
 
 
   return (
-    <Combobox as="div" value={selectedCity} onChange={setSelectedCity}>
+    <Combobox as="div" value={selectedCity} onChange={handleSelectCity}>
       <div className="relative mt-2">
         <Combobox.Input
           className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6"
           onChange={handleInputChange}
-          displayValue={(city: ICity) => city?.name + ", " + city?.stateCode}
+          displayValue={(city: ICity) => formatCityName(city?.name) + ", " + city?.stateCode}
           placeholder={'Search for a city'}
           autoComplete="off"
         />
@@ -59,7 +102,7 @@ export default function SearchSingleCity() {
             className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredCities.map((city) => (
               <Combobox.Option
-                key={city.id}
+                key={city.latitude + city.name}
                 value={city}
                 className={({active}) =>
                   classNames(

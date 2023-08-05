@@ -18,7 +18,6 @@ function classNames(...classes: string[]) {
 
 export default function MultiSelect({options}: IProps) {
   const [selected, setSelected] = useState<IOption[]>([])
-  console.log({selected})
 
   return (
     <Listbox value={selected} onChange={setSelected} multiple>

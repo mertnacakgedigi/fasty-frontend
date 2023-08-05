@@ -1,4 +1,4 @@
-import {Fragment} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import DateTimePicker from "@/components/datepicker";
@@ -6,6 +6,7 @@ import SingleSelect from "@/components/single-select";
 import MultiSelect from "@/components/multi-select";
 import SearchSingleCity from "@/components/search-single-city";
 import SearchMultipleCity from "@/components/search-multiple-city";
+import {IFilter, IFilterPayload} from "@/types";
 
 
 const equipmentOptions = [
@@ -41,10 +42,34 @@ const workTypeOptions = [
 
 interface IProps {
   open: boolean
-  setOpen: (open: boolean) => void
+  setOpen: (open: boolean) => void,
+  selectedFilter: IFilter,
 }
 
-export default function Example({open, setOpen}: IProps) {
+export default function Panel({open, setOpen,selectedFilter}: IProps) {
+  const [filter, setFilter] = useState<IFilter>(selectedFilter)
+
+  useEffect(() => {
+    setFilter(selectedFilter)
+  }, [selectedFilter])
+
+
+
+  const handleChangeFilter = (key: string, value: any) => {
+    const newFilter = {...filter, [key]: value}
+    setFilter(newFilter)
+  }
+  const handleChangeFilterPayload = (key: keyof IFilterPayload, value: any) => {
+    const newFilter = {...filter, payload: {...filter.payload, [key]: value}}
+    setFilter(newFilter)
+  }
+
+  const onHandleSubmit = () => {
+    console.log({filter})
+    // make api call
+
+  }
+
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -64,7 +89,7 @@ export default function Example({open, setOpen}: IProps) {
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                  <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                     <div className="flex-1">
                       {/* Header */}
                       <div className="bg-gray-50 px-4 py-6 sm:px-6">
@@ -72,7 +97,7 @@ export default function Example({open, setOpen}: IProps) {
                           <div className="space-y-1">
                             <Dialog.Title
                               className="text-base font-semibold leading-6 text-gray-900">
-                              New project
+                              {filter.name}
                             </Dialog.Title>
                             <p className="text-sm text-gray-500">
                               Get started by filling in the information below to create
@@ -82,7 +107,7 @@ export default function Example({open, setOpen}: IProps) {
                           <div className="flex h-7 items-center">
                             <button
                               type="button"
-                              className="relative text-gray-400 hover:text-gray-500"
+                              className="relative border-none text-gray-400 hover:text-gray-500"
                               onClick={() => setOpen(false)}
                             >
                               <span className="absolute -inset-2.5"/>
@@ -107,7 +132,7 @@ export default function Example({open, setOpen}: IProps) {
                                   Origin
                                 </label>
                                 <div className="mt-2">
-                                  <SearchSingleCity/>
+                                  <SearchSingleCity origin={filter.payload.originCity} updateFilterPayload={handleChangeFilterPayload} />
                                 </div>
                               </div>
 
@@ -290,14 +315,15 @@ export default function Example({open, setOpen}: IProps) {
                           Cancel
                         </button>
                         <button
-                          type="submit"
+                          onClick={onHandleSubmit}
+                          // type="submit"
                           className="inline-flex justify-center rounded-md bg-red-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900"
                         >
-                          Create
+                          Save
                         </button>
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

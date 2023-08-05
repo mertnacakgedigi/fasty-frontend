@@ -1,91 +1,11 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Panel from '@/components/panel'
 import {convertToLosAngeles} from "@/app/helper";
 import {PencilIcon, PauseIcon, PlayIcon} from "@heroicons/react/24/outline";
-
-export enum FilterStatus {
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-}
-
-export interface IFilterPayload {
-  workOpportunityTypeList: string[];
-  originCity: OriginCity;
-  startCityName: string;
-  startCityStateCode: string;
-  startCityLatitude: number;
-  startCityLongitude: number;
-  startCityDisplayValue: string;
-  isOriginCityLive: boolean;
-  startCityRadius: number;
-  destinationCity: null;
-  multiselectDestinationCitiesRadiusFilters: string | null;
-  exclusionCitiesFilter: null;
-  endCityName: null;
-  endCityStateCode: null;
-  endCityDisplayValue: null;
-  endCityLatitude: null;
-  endCityLongitude: null;
-  isDestinationCityLive: null;
-  endCityRadius: number | null;
-  startDate: string | null;
-  endDate: string | null;
-  minDistance: null;
-  maxDistance: number;
-  minimumDurationInMillis: null;
-  maximumDurationInMillis: null;
-  minPayout: number;
-  minPricePerDistance: number | null
-  trailerStatusFilters: string[];
-  equipmentTypeFilters: string[];
-  equipmentTypeFiltersForTags: string[];
-  driverTypeFilters: any[];
-  uiiaCertificationsFilter: any[] | null;
-  workOpportunityOperatingRegionFilter: any[];
-  loadingTypeFilters: any[];
-  maximumNumberOfStops: number | null
-  workOpportunityAccessType: null;
-  sortByField: string;
-  sortOrder: string;
-  visibilityStatusType: string;
-  nextItemToken: number;
-  resultSize: number;
-  searchURL: string;
-  savedSearchId: string;
-  isAutoRefreshCall: boolean;
-  notificationId: string;
-  auditContextMap: string;
-}
-
-export interface OriginCity {
-  name: string;
-  stateCode: string;
-  latitude: number;
-  longitude: number;
-  displayValue: string;
-  isCityLive: boolean;
-  isAnywhere: boolean;
-  uniqueKey: string;
-}
+import {FilterStatus, IFilter} from "@/types";
 
 
-export interface IFilter {
-  id: number
-  name: string
-  status: FilterStatus
-  intervalId?: ReturnType<typeof setInterval>
-  payload: IFilterPayload
-  bookLimit: number
-  currentBookCount: number
-  lastBookedAt: string | null
-  bookLimitInterval: number
-  blockStartTime: string | null
-  blockEndTime: string | null
-  isTestMode: boolean
-  userId: string
-  createdAt: string
-  updatedAt: string
-}
+
 
 const filters: IFilter[] = [
   {
@@ -697,7 +617,16 @@ const filters: IFilter[] = [
 
 
 export default function Example() {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState<IFilter>()
+
+  const handleOpenPanel = (filter: IFilter) => {
+    setSelectedFilter(filter)
+    setOpen(true)
+  }
+  // useEffect(() => {
+  //   handleOpenPanel(filters[0])
+  // },[])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -790,7 +719,7 @@ export default function Example() {
 
                   </td>
 
-                  <td onClick={() => setOpen(true)}
+                  <td onClick={() => handleOpenPanel(filter)}
                       className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                     <div className='flex flex-row'>                    {filter.status === FilterStatus.ACTIVE ? (
                       <PauseIcon
@@ -813,7 +742,7 @@ export default function Example() {
           </div>
         </div>
       </div>
-      <Panel open={open} setOpen={setOpen}/>
+      {selectedFilter && <Panel open={open} setOpen={setOpen} selectedFilter={selectedFilter}/>}
     </div>
   )
 }
