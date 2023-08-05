@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import CallToActionClient from "@/app/call-to-action.client";
 
 export default function Home() {
   return (
@@ -33,30 +33,7 @@ export default function Home() {
               with Amazon
               Relay. Our system is built to automate your load booking process based on your filters. With the capacity
               to book loads 10x faster than our competitors, we are the game-changer in the industry.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                id="email"
-                type="email"
-                className="w-full border-2 rounded-md p-4"
-                required
-                placeholder="Enter your email"
-              />
-              <button
-                className="cursor-pointer tracking-wider text-lg font-semibold
-      inline-table
-      w-full
-      items-center
-      p-4
-      rounded-md
-      text-center bg-[#712023] text-white
-      max-h-16
-      uppercase
-    "
-
-              >
-                Get Early Access
-              </button>
-            </div>
+            <CallToActionClient/>
             {/*<div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">*/}
             {/*  <a href="https://chrome.google.com/webstore/detail/kcmjhdaokiedcophgjlhmgchlbppmian"*/}
             {/*     className="inline-flex items-center justify-center w-full px-5 py-3 text-sm font-medium text-center text-gray-900 border border-gray-200 rounded-lg sm:w-auto hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">*/}
@@ -181,30 +158,7 @@ export default function Home() {
             <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Say goodbye to load board
               and hello to streamlined booking with Fasty. Try it today and see the difference it can make for
               your business.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                id="email"
-                type="email"
-                className="w-full border-2 rounded-md p-4"
-                required
-                placeholder="Enter your email"
-              />
-              <button
-                className="cursor-pointer tracking-wider text-lg font-semibold
-      inline-table
-      w-full
-      items-center
-      p-4
-      rounded-md
-      text-center bg-[#712023] text-white
-      max-h-16
-      uppercase
-    "
-
-              >
-                Get Early Access
-              </button>
-            </div>
+            <CallToActionClient/>
           </div>
         </div>
       </section>
