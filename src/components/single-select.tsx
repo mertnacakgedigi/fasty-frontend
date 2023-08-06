@@ -1,24 +1,49 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
-
-const options = [
-  { value: null, label: 'Any' },
-  { value: 2, label: '2' },
-  { value: 3, label: '3' },
-  { value: 4, label: '4' },
-  { value: 999, label: '5+' },
-];
+import { IFilterPayload } from '@/types';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function SingleSelect() {
-  const [selected, setSelected] = useState(options[0]);
+interface IOption {
+  value: number | null;
+  label: string;
+}
+
+interface IProps {
+  selectedValue: number | string | null;
+  options: IOption[];
+  type: keyof IFilterPayload;
+  onChangeFilterPayload: (key: keyof IFilterPayload, val: any) => void;
+}
+export default function SingleSelect({
+  selectedValue,
+  options,
+  type,
+  onChangeFilterPayload,
+}: IProps) {
+  const [selected, setSelected] = useState<IOption>(options[0]);
+  console.log({ type });
+
+  useEffect(() => {
+    const selectedOption = options.find(
+      (option) => option.value === selectedValue
+    );
+    if (selectedOption) {
+      setSelected(selectedOption);
+    }
+  }, [selectedValue]);
+
+  const handleSelected = (option: IOption) => {
+    console.log({ option });
+    setSelected(option);
+    onChangeFilterPayload(type, option.value);
+  };
 
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={selected} onChange={handleSelected}>
       {({ open }) => (
         <>
           <div className='relative'>

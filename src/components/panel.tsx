@@ -23,6 +23,14 @@ const equipmentOptions = [
   { value: 'FORTY_FIVE_FOOT_HIGHCUBE_CONTAINER', label: "45' HC Container" },
 ];
 
+const stopOptions = [
+  { value: null, label: 'Any' },
+  { value: 2, label: '2' },
+  { value: 3, label: '3' },
+  { value: 4, label: '4' },
+  { value: 999, label: '5+' },
+];
+
 const loadTypeOptions = [
   { value: 'LIVE', label: 'Live' },
   { value: 'DROP', label: 'Drop and Hook' },
@@ -57,10 +65,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
     setFilter(newFilter);
   };
   const handleChangeFilterPayload = (key: keyof IFilterPayload, value: any) => {
+    if (!key) {
+      console.error('key is required');
+      return;
+    }
+    console.log({ key, value });
     const newFilter = {
       ...filter,
       payload: { ...filter.payload, [key]: value },
     };
+    console.log({ newFilter });
     setFilter(newFilter);
   };
 
@@ -226,6 +240,13 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                       type='text'
                                       name='price'
                                       id='price'
+                                      value={filter.payload.minPayout}
+                                      onChange={(e) =>
+                                        handleChangeFilterPayload(
+                                          'minPayout',
+                                          parseInt(e.target.value)
+                                        )
+                                      }
                                       className='block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                                       placeholder='0.00'
                                       aria-describedby='price-currency'
@@ -259,6 +280,15 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                       type='text'
                                       name='pricePerMile'
                                       id='pricePerMile'
+                                      value={
+                                        filter.payload.minPricePerDistance || 0
+                                      }
+                                      onChange={(e) =>
+                                        handleChangeFilterPayload(
+                                          'minPricePerDistance',
+                                          parseInt(e.target.value)
+                                        )
+                                      }
                                       className='block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                                       placeholder='0.00'
                                       aria-describedby='price-currency'
@@ -282,7 +312,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                   Stops (max)
                                 </label>
                                 <div className='mt-2'>
-                                  <SingleSelect />
+                                  <SingleSelect
+                                    selectedValue={
+                                      filter.payload.maximumNumberOfStops
+                                    }
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
+                                    type='maximumNumberOfStops'
+                                    options={stopOptions}
+                                  />
                                 </div>
                               </div>
                               <div className='sm:col-span-3'>
@@ -293,7 +332,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                   Equipment
                                 </label>
                                 <div className='mt-2'>
-                                  <MultiSelect options={equipmentOptions} />
+                                  <MultiSelect
+                                    selectedValues={
+                                      filter.payload.equipmentTypeFilters
+                                    }
+                                    type='equipmentTypeFilters'
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
+                                    options={equipmentOptions}
+                                  />
                                 </div>
                               </div>
                               <div className='sm:col-span-3'>
@@ -304,7 +352,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                   Work Type
                                 </label>
                                 <div className='mt-2'>
-                                  <MultiSelect options={workTypeOptions} />
+                                  <MultiSelect
+                                    selectedValues={
+                                      filter.payload.workOpportunityTypeList
+                                    }
+                                    type='workOpportunityTypeList'
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
+                                    options={workTypeOptions}
+                                  />
                                 </div>
                               </div>
                               <div className='sm:col-span-2'>
@@ -316,6 +373,13 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                 </label>
                                 <div className='mt-2'>
                                   <MultiSelect
+                                    selectedValues={
+                                      filter.payload.trailerStatusFilters
+                                    }
+                                    type='trailerStatusFilters'
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
                                     options={[
                                       { value: 'PROVIDED', label: 'Provided' },
                                       {
@@ -334,7 +398,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                   Driver Type
                                 </label>
                                 <div className='mt-2'>
-                                  <MultiSelect options={driverTypeOptions} />
+                                  <MultiSelect
+                                    selectedValues={
+                                      filter.payload.driverTypeFilters
+                                    }
+                                    type='driverTypeFilters'
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
+                                    options={driverTypeOptions}
+                                  />
                                 </div>
                               </div>
 
@@ -346,7 +419,16 @@ export default function Panel({ open, setOpen, selectedFilter }: IProps) {
                                   Load Type
                                 </label>
                                 <div className='mt-2'>
-                                  <MultiSelect options={loadTypeOptions} />
+                                  <MultiSelect
+                                    selectedValues={
+                                      filter.payload.loadingTypeFilters
+                                    }
+                                    type='loadingTypeFilters'
+                                    onChangeFilterPayload={
+                                      handleChangeFilterPayload
+                                    }
+                                    options={loadTypeOptions}
+                                  />
                                 </div>
                               </div>
                             </div>

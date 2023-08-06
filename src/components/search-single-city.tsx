@@ -17,27 +17,13 @@ export default function SearchSingleCity({
   origin,
   onChangeFilterPayload,
 }: IProps) {
-  console.log({ origin });
   const [query, setQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState<IOriginCity | null>(origin);
   const [loading, setLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState<IOriginCity[]>([]);
 
-  console.log({ selectedCity });
-
   const handleSelectCity = (city: ICity) => {
-    console.log({ city });
-
     setSelectedCity(city);
-    // "name": "BAKERSFIELD",
-    //   "latitude": 35.35289,
-    //   "longitude": -119.035333,
-    //   "stateCode": "CA",
-    //   "uniqueKey": "35.35289BAKERSFIELD, CA",
-    //   "isAnywhere": false,
-    //   "isCityLive": false,
-    //   "displayValue": "BAKERSFIELD, CA"
-
     const origin: IOriginRelay = {
       name: city.name.toUpperCase(),
       latitude: city.latitude,

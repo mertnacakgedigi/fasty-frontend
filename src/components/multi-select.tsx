@@ -1,6 +1,7 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { IFilterPayload } from '@/types';
 
 interface IOption {
   value: string;
@@ -9,24 +10,47 @@ interface IOption {
 
 interface IProps {
   options: { value: string; label: string }[];
+  selectedValues: string[];
+  type: keyof IFilterPayload;
+  onChangeFilterPayload: (key: keyof IFilterPayload, val: any) => void;
 }
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function MultiSelect({ options }: IProps) {
-  const [selected, setSelected] = useState<IOption[]>([]);
+export default function MultiSelect({
+  options,
+  selectedValues,
+  type,
+  onChangeFilterPayload,
+}: IProps) {
+  const [selectedOptions, setSelectedOptions] = useState<IOption[]>([]);
+
+  useEffect(() => {
+    const selectedOptions = options.filter((option) =>
+      selectedValues.includes(option.value)
+    );
+    setSelectedOptions(selectedOptions);
+  }, [selectedValues]);
+
+  const handleSelected = (option: IOption[]) => {
+    setSelectedOptions(option);
+    onChangeFilterPayload(
+      type,
+      option.map((item) => item.value)
+    );
+  };
 
   return (
-    <Listbox value={selected} onChange={setSelected} multiple>
+    <Listbox value={selectedOptions} onChange={handleSelected} multiple>
       {({ open }) => (
         <>
           <div className='relative'>
             <Listbox.Button className='relative h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-red-900 sm:text-sm sm:leading-6'>
               <span className='block truncate'>
                 {' '}
-                {selected.map((item) => item.label).join(', ')}
+                {selectedOptions.map((item) => item.label).join(', ')}
               </span>
               <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                 <ChevronUpDownIcon

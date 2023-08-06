@@ -14,8 +14,6 @@ export default function SearchMultipleCity() {
   const [loading, setLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState<ICity[]>([]);
 
-  console.log({ selectedCities });
-
   const fetchCities = _.debounce(async (value: string) => {
     if (value === '') {
       setFilteredCities([]);
