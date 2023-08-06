@@ -27,8 +27,6 @@ export interface IOriginRelay extends IOriginCity {
   displayValue: string;
 }
 
-
-
 export enum FilterStatus {
   ACTIVE = 'ACTIVE',
   PAUSED = 'PAUSED',
@@ -61,7 +59,7 @@ export interface IFilterPayload {
   minimumDurationInMillis: null;
   maximumDurationInMillis: null;
   minPayout: number;
-  minPricePerDistance: number | null
+  minPricePerDistance: number | null;
   trailerStatusFilters: string[];
   equipmentTypeFilters: string[];
   equipmentTypeFiltersForTags: string[];
@@ -69,7 +67,7 @@ export interface IFilterPayload {
   uiiaCertificationsFilter: any[] | null;
   workOpportunityOperatingRegionFilter: any[];
   loadingTypeFilters: any[];
-  maximumNumberOfStops: number | null
+  maximumNumberOfStops: number | null;
   workOpportunityAccessType: null;
   sortByField: string;
   sortOrder: string;
@@ -83,22 +81,20 @@ export interface IFilterPayload {
   auditContextMap: string;
 }
 
-
-
 export interface IFilter {
-  id: number
-  name: string
-  status: FilterStatus
-  intervalId?: ReturnType<typeof setInterval>
-  payload: IFilterPayload
-  bookLimit: number
-  currentBookCount: number
-  lastBookedAt: string | null
-  bookLimitInterval: number
-  blockStartTime: string | null
-  blockEndTime: string | null
-  isTestMode: boolean
-  userId: string
-  createdAt: string
-  updatedAt: string
+  id: number;
+  name: string;
+  status: FilterStatus;
+  intervalId?: ReturnType<typeof setInterval>;
+  payload: IFilterPayload;
+  bookLimit: number;
+  currentBookCount: number;
+  lastBookedAt: string | null;
+  bookLimitInterval: number;
+  blockStartTime: string | null;
+  blockEndTime: string | null;
+  isTestMode: boolean;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 }
