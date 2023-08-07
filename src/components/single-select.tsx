@@ -25,7 +25,6 @@ export default function SingleSelect({
   onChangeFilterPayload,
 }: IProps) {
   const [selected, setSelected] = useState<IOption>(options[0]);
-  console.log({ type });
 
   useEffect(() => {
     const selectedOption = options.find(

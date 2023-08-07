@@ -1,4 +1,11 @@
-import { FilterStatus, IFilter } from '@/types';
+import {
+  FilterStatus,
+  ICity,
+  IDestinationCity,
+  IFilter,
+  IOriginCity,
+  IOriginRelay,
+} from '@/types';
 import moment from 'moment-timezone';
 
 const losAngelesTimezone = 'America/Los_Angeles';
@@ -53,6 +60,46 @@ export function dateToString(date: Date) {
   return dateUTC.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
 }
 
+const formatCityDisplayValue = (name: string, stateCode: string) => {
+  return `${name.toUpperCase()}, ${stateCode.toUpperCase()}`;
+};
+
+export function generateCityKey(lat: number, name: string) {
+  return `${lat}${name}`;
+}
+
+export function castCityToDestination(city: ICity): IDestinationCity {
+  return {
+    cityName: city.name.toUpperCase(),
+    cityStateCode: city.stateCode.toUpperCase(),
+    cityLatitude: city.latitude,
+    cityLongitude: city.longitude,
+    cityDisplayValue: formatCityDisplayValue(city.name, city.stateCode),
+    //:TODO: remove this
+    radius: 25,
+  };
+}
+
+export function castDestinationToCity(city: IDestinationCity): IOriginRelay {
+  return {
+    name: city.cityName,
+    stateCode: city.cityStateCode,
+    latitude: city.cityLatitude,
+    longitude: city.cityLongitude,
+    uniqueKey: generateCityKey(city.cityLatitude, city.cityName),
+    displayValue: formatCityDisplayValue(city.cityName, city.cityStateCode),
+    isAnywhere: false,
+    isCityLive: false,
+  };
+}
+
+export function millisecondsToHours(milliseconds: number) {
+  return milliseconds / 1000 / 60 / 60;
+}
+
+export function hoursToMilliseconds(hours: number) {
+  return hours * 1000 * 60 * 60;
+}
 export const dummyFilters: IFilter[] = [
   {
     id: 2,

@@ -11,18 +11,19 @@ function classNames(...classes: string[]) {
 
 interface IProps {
   origin: IOriginCity | null;
-  onChangeFilterPayload: (key: keyof IFilterPayload, val: any) => void;
+  handleOriginChange: (origin: IOriginRelay) => void;
 }
+
 export default function SearchSingleCity({
   origin,
-  onChangeFilterPayload,
+  handleOriginChange,
 }: IProps) {
   const [query, setQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState<IOriginCity | null>(origin);
   const [loading, setLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState<IOriginCity[]>([]);
 
-  const handleSelectCity = (city: ICity) => {
+  const handleSelectCity = async (city: ICity) => {
     setSelectedCity(city);
     const origin: IOriginRelay = {
       name: city.name.toUpperCase(),
@@ -35,13 +36,7 @@ export default function SearchSingleCity({
       displayValue: city.name + ', ' + city.stateCode,
     };
 
-    onChangeFilterPayload('originCity', origin);
-    onChangeFilterPayload('startCityName', origin.name);
-    onChangeFilterPayload('startCityStateCode', origin.stateCode);
-    onChangeFilterPayload(
-      'startCityDisplayValue',
-      origin.name + ', ' + origin.stateCode
-    );
+    handleOriginChange(origin);
 
     // Clear the query after selection
     setFilteredCities([]);

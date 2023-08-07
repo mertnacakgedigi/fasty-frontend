@@ -12,6 +12,14 @@ export interface ICity extends IOriginCity {
   zips: string;
   id: number;
 }
+export interface IDestinationCity {
+  cityLatitude: number;
+  cityLongitude: number;
+  cityName: string;
+  cityStateCode: string;
+  cityDisplayValue: string;
+  radius: number;
+}
 
 export interface IOriginCity {
   name: string;
@@ -54,10 +62,10 @@ export interface IFilterPayload {
   endCityRadius: number | null;
   startDate: string | null;
   endDate: string | null;
-  minDistance: null;
-  maxDistance: number;
-  minimumDurationInMillis: null;
-  maximumDurationInMillis: null;
+  minDistance: number | null;
+  maxDistance: number | null;
+  minimumDurationInMillis: number | null;
+  maximumDurationInMillis: number | null;
   minPayout: number;
   minPricePerDistance: number | null;
   trailerStatusFilters: string[];

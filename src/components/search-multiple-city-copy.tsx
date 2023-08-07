@@ -1,36 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { Combobox } from '@headlessui/react';
 import _ from 'lodash';
-import { ICity, IDestinationCity, IFilterPayload } from '@/types';
-import { castCityToDestination, formatCityName } from '@/utils/helper';
+import { ICity } from '@/types';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export interface IProps {
-  selectedOnes: string | null;
-  onChangeFilterPayload: (key: keyof IFilterPayload, val: any) => void;
-}
-
-export default function SearchMultipleCity({
-  selectedOnes,
-  onChangeFilterPayload,
-}: IProps) {
+export default function SearchMultipleCity() {
   const [query, setQuery] = useState('');
-  const [selectedDestinations, setSelectedDestinations] = useState<
-    IDestinationCity[]
-  >([]);
+  const [selectedCities, setSelectedCities] = useState<ICity[]>([]);
   const [loading, setLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState<ICity[]>([]);
-
-  useEffect(() => {
-    if (selectedOnes) {
-      const selectedValues: IDestinationCity[] = JSON.parse(selectedOnes);
-      setSelectedDestinations(selectedValues);
-    }
-  }, [selectedOnes]);
 
   const fetchCities = _.debounce(async (value: string) => {
     if (value === '') {
@@ -55,85 +37,42 @@ export default function SearchMultipleCity({
   };
 
   const handleSelectCity = (city: ICity) => {
-    const destination = castCityToDestination(city);
     // Check if the city is already selected
 
-    if (isDestinationSelected(destination)) {
+    if (isCitySelected(city)) {
       // If city is already selected, then remove it from the list
-      const tempDestinations = [...selectedDestinations];
-      const newDestinations = tempDestinations.filter(
-        (selectedCity) =>
-          selectedCity.cityDisplayValue !== destination.cityDisplayValue
+      setSelectedCities((prevCities) =>
+        prevCities.filter((selectedCity) => selectedCity.id !== city.id)
       );
-      setSelectedDestinations(newDestinations);
-      if (newDestinations.length === 0) {
-        onChangeFilterPayload(
-          'multiselectDestinationCitiesRadiusFilters',
-          null
-        );
-      } else {
-        onChangeFilterPayload(
-          'multiselectDestinationCitiesRadiusFilters',
-          JSON.stringify(newDestinations)
-        );
-      }
     } else {
-      const newDestinations = [...selectedDestinations, destination];
       // Otherwise, add the city to the list
-      setSelectedDestinations(newDestinations);
-      onChangeFilterPayload(
-        'multiselectDestinationCitiesRadiusFilters',
-        JSON.stringify(newDestinations)
-      );
+      setSelectedCities((prevCities) => [...prevCities, city]);
     }
-
     // Clear the query after selection
     setFilteredCities([]);
     setQuery('');
   };
 
-  const handleRemoveDestination = (displayValue: string) => {
-    const tempDestinations = [...selectedDestinations];
-    const newDestinations = tempDestinations.filter(
-      (selectedCity) => selectedCity.cityDisplayValue !== displayValue
-    );
-    setSelectedDestinations(newDestinations);
-    if (newDestinations.length === 0) {
-      onChangeFilterPayload('multiselectDestinationCitiesRadiusFilters', null);
-    } else {
-      onChangeFilterPayload(
-        'multiselectDestinationCitiesRadiusFilters',
-        JSON.stringify(newDestinations)
-      );
-    }
-  };
-
-  const isDestinationSelected = (dest: IDestinationCity): boolean => {
-    return selectedDestinations.some(
-      (selectedCity) => selectedCity.cityDisplayValue === dest.cityDisplayValue
-    );
+  const handleRemoveCity = (id: number) => {
+    setSelectedCities(selectedCities.filter((city) => city.id !== id));
   };
 
   const isCitySelected = (city: ICity): boolean => {
-    const castedDestination = castCityToDestination(city);
-    return selectedDestinations.some(
-      (selectedCity) =>
-        selectedCity.cityDisplayValue === castedDestination.cityDisplayValue
-    );
+    return selectedCities.some((selectedCity) => selectedCity.id === city.id);
   };
 
   return (
     <div>
       <Combobox as='div' onChange={handleSelectCity}>
         <div className='relative mt-2 flex ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 flex-wrap items-center bg-white rounded-md shadow-sm text-sm'>
-          {selectedDestinations.map((city) => (
+          {selectedCities.map((city) => (
             <span
-              key={city.cityDisplayValue}
+              key={city.id}
               className='inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 mr-2 m-1'
             >
-              {formatCityName(city.cityName)}, {city.cityStateCode}
+              {city.name}, {city.stateCode}
               <button
-                onClick={() => handleRemoveDestination(city.cityDisplayValue)}
+                onClick={() => handleRemoveCity(city.id)}
                 className='ml-2 text-red-900'
               >
                 x

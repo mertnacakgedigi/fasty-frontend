@@ -3,19 +3,25 @@ import Panel from '@/components/panel';
 import { convertToLosAngeles } from '@/utils/helper';
 import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { FilterStatus, IFilter } from '@/types';
-import { dummyFilters } from '@/utils/helper';
+import api from '@/utils/api';
 
 export default function Example() {
   const [open, setOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<IFilter>();
-
+  const [filters, setFilters] = useState<IFilter[]>([]);
   const handleOpenPanel = (filter: IFilter) => {
     setSelectedFilter(filter);
     setOpen(true);
   };
-  // useEffect(() => {
-  //   handleOpenPanel(filters[0])
-  // },[])
+
+  const fetchFilters = async () => {
+    const response = await api.get('/filter');
+    setFilters(response.data);
+  };
+
+  useEffect(() => {
+    fetchFilters();
+  }, []);
 
   return (
     <div className='px-4 sm:px-6 lg:px-8'>
@@ -79,7 +85,7 @@ export default function Example() {
                 </tr>
               </thead>
               <tbody className='divide-y divide-gray-200 bg-white'>
-                {dummyFilters.map((filter) => (
+                {filters.map((filter) => (
                   <tr key={filter.id}>
                     <td className='whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0'>
                       <div className='flex items-center'>
@@ -182,7 +188,12 @@ export default function Example() {
         </div>
       </div>
       {selectedFilter && (
-        <Panel open={open} setOpen={setOpen} selectedFilter={selectedFilter} />
+        <Panel
+          open={open}
+          setOpen={setOpen}
+          selectedFilter={selectedFilter}
+          onSave={fetchFilters}
+        />
       )}
     </div>
   );

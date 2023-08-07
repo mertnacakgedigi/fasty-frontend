@@ -1,4 +1,33 @@
-export default function Example() {
+'use client';
+import { useState } from 'react';
+import { API_ENDPOINT } from '../../utils/constants';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(API_ENDPOINT + '/auth/login', {
+        email,
+        password,
+      });
+      const token = await response.data.accessToken;
+      if (!token) {
+        alert('Invalid credentials');
+        return;
+      }
+      await localStorage.setItem('token', token); // Storing token in localStorage
+      router.push('/app');
+    } catch (error) {
+      alert('Invalid credentials');
+      console.error('Error logging in:', error);
+    }
+  };
+
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
@@ -28,6 +57,8 @@ export default function Example() {
                   name='email'
                   type='email'
                   autoComplete='email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                 />
@@ -57,6 +88,8 @@ export default function Example() {
                   name='password'
                   type='password'
                   autoComplete='current-password'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                 />
@@ -66,6 +99,7 @@ export default function Example() {
             <div>
               <button
                 type='submit'
+                onClick={handleLogin}
                 className='flex w-full justify-center rounded-md bg-red-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-grey-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900'
               >
                 Sign in
@@ -73,15 +107,15 @@ export default function Example() {
             </div>
           </form>
 
-          <p className='mt-10 text-center text-sm text-gray-500'>
-            Not a member?{' '}
-            <a
-              href='#'
-              className='font-semibold leading-6 text-red-900 hover:text-indigo-500'
-            >
-              Start a 14 day free trial
-            </a>
-          </p>
+          {/*<p className='mt-10 text-center text-sm text-gray-500'>*/}
+          {/*  Not a member?{' '}*/}
+          {/*  <a*/}
+          {/*    href='#'*/}
+          {/*    className='font-semibold leading-6 text-red-900 hover:text-indigo-500'*/}
+          {/*  >*/}
+          {/*    Start a 14 day free trial*/}
+          {/*  </a>*/}
+          {/*</p>*/}
         </div>
       </div>
     </>
