@@ -168,6 +168,8 @@ export default function Panel({
     temp.payload.startCityName = origin.name;
     temp.payload.startCityStateCode = origin.stateCode;
     temp.payload.startCityDisplayValue = origin.name + ', ' + origin.stateCode;
+    temp.payload.startCityLongitude = origin.longitude;
+    temp.payload.startCityLatitude = origin.latitude;
     setFilter(temp);
   };
 
