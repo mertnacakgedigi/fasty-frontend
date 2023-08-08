@@ -5,13 +5,91 @@ import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { FilterStatus, IFilter } from '@/types';
 import api from '@/utils/api';
 
+const initialFilter: IFilter = {
+  name: '',
+  status: FilterStatus.PAUSED,
+  bookLimit: 1,
+  currentBookCount: 0,
+  lastBookedAt: null,
+  bookLimitInterval: 0,
+  blockStartTime: null,
+  blockEndTime: null,
+  isTestMode: true,
+  payload: {
+    workOpportunityTypeList: ['ONE_WAY'],
+    originCity: null,
+    startCityName: null,
+    startCityStateCode: null,
+    startCityLatitude: null,
+    startCityLongitude: null,
+    startCityDisplayValue: null,
+    isOriginCityLive: false,
+    startCityRadius: 50,
+    destinationCity: null,
+    multiselectDestinationCitiesRadiusFilters: null,
+    exclusionCitiesFilter: null,
+    endCityName: null,
+    endCityStateCode: null,
+    endCityDisplayValue: null,
+    endCityLatitude: null,
+    endCityLongitude: null,
+    isDestinationCityLive: null,
+    endCityRadius: null,
+    startDate: null,
+    endDate: null,
+    minDistance: null,
+    maxDistance: null,
+    minimumDurationInMillis: null,
+    maximumDurationInMillis: null,
+    minPayout: null,
+    minPricePerDistance: null,
+    trailerStatusFilters: ['PROVIDED'],
+    equipmentTypeFilters: [
+      'FIFTY_THREE_FOOT_TRUCK',
+      'SKIRTED_FIFTY_THREE_FOOT_TRUCK',
+      'FIFTY_THREE_FOOT_DRY_VAN',
+      'FIFTY_THREE_FOOT_A5_AIR_TRAILER',
+      'FORTY_FIVE_FOOT_TRUCK',
+    ],
+    equipmentTypeFiltersForTags: ['FIFTY_THREE_FOOT_TRUCK'],
+    driverTypeFilters: [],
+    uiiaCertificationsFilter: [],
+    workOpportunityOperatingRegionFilter: [],
+    loadingTypeFilters: [],
+    maximumNumberOfStops: null,
+    workOpportunityAccessType: null,
+    sortByField: 'startTime',
+    sortOrder: 'asc',
+    visibilityStatusType: 'ALL',
+    nextItemToken: 0,
+    resultSize: 50,
+    searchURL: '',
+    isAutoRefreshCall: false,
+    notificationId: '',
+    auditContextMap:
+      '{"rlbChannel":"EXACT_MATCH","isOriginCityLive":"false","isDestinationCityLive":"false","source":"AVAILABLE_WORK"}',
+  },
+};
+
 export default function Example() {
   const [open, setOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<IFilter>();
+  const [panelType, setPanelType] = useState<'add' | 'edit'>('add');
+  const [selectedFilter, setSelectedFilter] = useState<IFilter>(initialFilter);
   const [filters, setFilters] = useState<IFilter[]>([]);
-  const handleOpenPanel = (filter: IFilter) => {
+  const handleOpenEditPanel = (filter: IFilter) => {
+    setPanelType('edit');
     setSelectedFilter(filter);
     setOpen(true);
+  };
+
+  const handleOpenAddPanel = () => {
+    setPanelType('add');
+    setOpen(true);
+  };
+
+  const handleClosePanel = () => {
+    setOpen(false);
+    setSelectedFilter(initialFilter);
   };
 
   const fetchFilters = async () => {
@@ -52,6 +130,7 @@ export default function Example() {
         <div className='mt-4 sm:ml-16 sm:mt-0 sm:flex-none'>
           <button
             type='button'
+            onClick={handleOpenAddPanel}
             className='block rounded-md bg-red-900 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-grey-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900'
           >
             Add filter
@@ -189,7 +268,7 @@ export default function Example() {
                           />
                         )}
                         <PencilIcon
-                          onClick={() => handleOpenPanel(filter)}
+                          onClick={() => handleOpenEditPanel(filter)}
                           className='h-6 w-5 ml-5 text-red-900 group-hover:text-gray-900 cursor-pointer'
                           aria-hidden='true'
                         />
@@ -205,9 +284,10 @@ export default function Example() {
       {selectedFilter && (
         <Panel
           open={open}
-          setOpen={setOpen}
+          onClose={handleClosePanel}
           selectedFilter={selectedFilter}
           onSave={fetchFilters}
+          panelType={panelType}
         />
       )}
     </div>

@@ -62,16 +62,18 @@ const workTypeOptions = [
 
 interface IProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  onClose: () => void;
   selectedFilter: IFilter;
   onSave: () => void;
+  panelType: 'add' | 'edit';
 }
 
 export default function Panel({
   open,
-  setOpen,
+  onClose,
   selectedFilter,
   onSave,
+  panelType,
 }: IProps) {
   const [filter, setFilter] = useState<IFilter>();
   const [snackbar, setSnackbar] = useState(false);
@@ -170,9 +172,21 @@ export default function Panel({
   };
 
   const onHandleSubmit = async () => {
+    if (panelType === 'add') {
+      const res = await api.post('/filter', filter);
+      if (res.status === 201) {
+        onClose();
+        setSnackbar(true);
+        onSave();
+      } else {
+        alert('Failed');
+      }
+      return;
+    }
+
     const res = await api.put(`/filter/${filter.id}`, filter);
     if (res.status === 200) {
-      setOpen(false);
+      onClose();
       setSnackbar(true);
       onSave();
     } else {
@@ -183,7 +197,7 @@ export default function Panel({
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as='div' className='relative z-10' onClose={setOpen}>
+        <Dialog as='div' className='relative z-10' onClose={onClose}>
           <div className='fixed inset-0' />
 
           <div className='fixed inset-0 overflow-hidden'>
@@ -206,18 +220,20 @@ export default function Panel({
                           <div className='flex items-start justify-between space-x-3'>
                             <div className='space-y-1'>
                               <Dialog.Title className='text-base font-semibold leading-6 text-gray-900'>
-                                {filter.name}
+                                {panelType === 'add'
+                                  ? 'New Filter'
+                                  : filter.name}
                               </Dialog.Title>
                               <p className='text-sm text-gray-500'>
                                 Get started by filling in the information below
-                                to create your new project.
+                                to create or edit your filter.
                               </p>
                             </div>
                             <div className='flex h-7 items-center'>
                               <button
                                 type='button'
                                 className='relative border-none text-gray-400 hover:text-gray-500'
-                                onClick={() => setOpen(false)}
+                                onClick={onClose}
                               >
                                 <span className='absolute -inset-2.5' />
                                 <span className='sr-only'>Close panel</span>
@@ -235,6 +251,29 @@ export default function Panel({
                           <div className='p-6 sm:space-y-0 sm:py-0 '>
                             <div className='pb-12'>
                               <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 '>
+                                <div className='sm:col-span-full'>
+                                  <label
+                                    htmlFor='filter-name'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Name
+                                  </label>
+                                  <div className='mt-2'>
+                                    <input
+                                      type='text'
+                                      name='filter-name'
+                                      id='filter-name'
+                                      value={filter.name}
+                                      onChange={(e) =>
+                                        handleChangeFilter(
+                                          'name',
+                                          e.target.value
+                                        )
+                                      }
+                                      className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
+                                    />
+                                  </div>
+                                </div>
                                 <div className='sm:col-span-5'>
                                   <label
                                     htmlFor='origin-city'
@@ -322,7 +361,7 @@ export default function Panel({
                                           .multiselectDestinationCitiesRadiusFilters
                                           .length === 0
                                       }
-                                      className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
+                                      className='disabled:bg-gray-100 disabled:text-gray-400 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                                     />
                                   </div>
                                 </div>
@@ -378,7 +417,7 @@ export default function Panel({
                                         type='text'
                                         name='price'
                                         id='price'
-                                        value={filter.payload.minPayout}
+                                        value={filter.payload.minPayout || ''}
                                         onChange={(e) =>
                                           handleChangeFilterPayload(
                                             'minPayout',
@@ -468,7 +507,7 @@ export default function Panel({
                                     htmlFor='minDistance'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Trip Min Distance (mile)
+                                    Min Distance (mile)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -491,7 +530,7 @@ export default function Panel({
                                     htmlFor='maxDistance'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Trip Max Distance (mile)
+                                    Max Distance (mile)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -514,7 +553,7 @@ export default function Panel({
                                     htmlFor='minimumDurationInMillis'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Trip Min Duration (hours)
+                                    Min Duration (hours)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -546,7 +585,7 @@ export default function Panel({
                                     htmlFor='maximumDurationInMillis'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Trip Max Duration (hours)
+                                    Max Duration (hours)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -824,7 +863,7 @@ export default function Panel({
                           <button
                             type='button'
                             className='rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-                            onClick={() => setOpen(false)}
+                            onClick={onClose}
                           >
                             Cancel
                           </button>

@@ -42,12 +42,12 @@ export enum FilterStatus {
 
 export interface IFilterPayload {
   workOpportunityTypeList: string[];
-  originCity: IOriginRelay;
-  startCityName: string;
-  startCityStateCode: string;
-  startCityLatitude: number;
-  startCityLongitude: number;
-  startCityDisplayValue: string;
+  originCity: IOriginRelay | null;
+  startCityName: string | null;
+  startCityStateCode: string | null;
+  startCityLatitude: number | null;
+  startCityLongitude: number | null;
+  startCityDisplayValue: string | null;
   isOriginCityLive: boolean;
   startCityRadius: number;
   destinationCity: null;
@@ -66,7 +66,7 @@ export interface IFilterPayload {
   maxDistance: number | null;
   minimumDurationInMillis: number | null;
   maximumDurationInMillis: number | null;
-  minPayout: number;
+  minPayout: number | null;
   minPricePerDistance: number | null;
   trailerStatusFilters: string[];
   equipmentTypeFilters: string[];
@@ -83,14 +83,14 @@ export interface IFilterPayload {
   nextItemToken: number;
   resultSize: number;
   searchURL: string;
-  savedSearchId: string;
+  savedSearchId?: string;
   isAutoRefreshCall: boolean;
   notificationId: string;
   auditContextMap: string;
 }
 
 export interface IFilter {
-  id: number;
+  id?: number;
   name: string;
   status: FilterStatus;
   intervalId?: ReturnType<typeof setInterval>;
@@ -102,7 +102,7 @@ export interface IFilter {
   blockStartTime: string | null;
   blockEndTime: string | null;
   isTestMode: boolean;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
+  userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
