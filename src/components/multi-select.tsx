@@ -35,11 +35,9 @@ export default function MultiSelect({
   }, [selectedValues]);
 
   const handleSelected = (option: IOption[]) => {
+    const values = option.map((item) => item.value);
     setSelectedOptions(option);
-    onChangeFilterPayload(
-      type,
-      option.map((item) => item.value)
-    );
+    onChangeFilterPayload(type, values);
   };
 
   return (

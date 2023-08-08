@@ -12,11 +12,13 @@ function classNames(...classes: string[]) {
 export interface IProps {
   selectedOnes: string | null;
   onChangeFilterPayload: (key: keyof IFilterPayload, val: any) => void;
+  selectedEndCityRadius?: number;
 }
 
 export default function SearchMultipleCity({
   selectedOnes,
   onChangeFilterPayload,
+  selectedEndCityRadius = 25,
 }: IProps) {
   const [query, setQuery] = useState('');
   const [selectedDestinations, setSelectedDestinations] = useState<
@@ -55,7 +57,7 @@ export default function SearchMultipleCity({
   };
 
   const handleSelectCity = (city: ICity) => {
-    const destination = castCityToDestination(city);
+    const destination = castCityToDestination(city, selectedEndCityRadius);
     // Check if the city is already selected
 
     if (isDestinationSelected(destination)) {
@@ -115,7 +117,10 @@ export default function SearchMultipleCity({
   };
 
   const isCitySelected = (city: ICity): boolean => {
-    const castedDestination = castCityToDestination(city);
+    const castedDestination = castCityToDestination(
+      city,
+      selectedEndCityRadius
+    );
     return selectedDestinations.some(
       (selectedCity) =>
         selectedCity.cityDisplayValue === castedDestination.cityDisplayValue

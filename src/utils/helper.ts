@@ -68,16 +68,22 @@ export function generateCityKey(lat: number, name: string) {
   return `${lat}${name}`;
 }
 
-export function castCityToDestination(city: ICity): IDestinationCity {
+export function castCityToDestination(
+  city: ICity,
+  radius: number
+): IDestinationCity {
   return {
     cityName: city.name.toUpperCase(),
     cityStateCode: city.stateCode.toUpperCase(),
     cityLatitude: city.latitude,
     cityLongitude: city.longitude,
     cityDisplayValue: formatCityDisplayValue(city.name, city.stateCode),
-    //:TODO: remove this
-    radius: 25,
+    radius: radius,
   };
+}
+
+export function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
 }
 
 export function castDestinationToCity(city: IDestinationCity): IOriginRelay {

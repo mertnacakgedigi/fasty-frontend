@@ -194,7 +194,7 @@ export default function Example() {
                       alt=''
                     />
                     <span className='sr-only'>Your profile</span>
-                    <span aria-hidden='true'>Tom Cook</span>
+                    <span aria-hidden='true'>Red Eye</span>
                   </a>
                 </li>
               </ul>

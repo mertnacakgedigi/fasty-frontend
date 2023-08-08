@@ -1,29 +1,39 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition, Switch } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import DateTimePicker from '@/components/date-picker';
 import SingleSelect from '@/components/single-select';
 import MultiSelect from '@/components/multi-select';
 import SearchSingleCity from '@/components/search-single-city';
 import SearchMultipleCity from '@/components/search-multiple-city';
-import { IFilter, IFilterPayload, IOriginRelay } from '@/types';
-import { hoursToMilliseconds, millisecondsToHours } from '@/utils/helper';
+import {
+  IDestinationCity,
+  IFilter,
+  IFilterPayload,
+  IOriginRelay,
+} from '@/types';
+import {
+  classNames,
+  hoursToMilliseconds,
+  millisecondsToHours,
+} from '@/utils/helper';
 import api from '@/utils/api';
 import Snackbar from '@/components/snackbar';
 
+import _ from 'lodash';
+
 const equipmentOptions = [
   { value: 'FIFTY_THREE_FOOT_TRUCK', label: "53' Trailer" },
-  { value: 'TWENTY_SIX_FOOT_BOX_TRUCK', label: "26' Truck" },
-  { value: 'CUBE_TRUCK', label: "16' Cube Truck" },
-  { value: 'TWO_PUP_TRAILERS', label: "28' Trailer" },
+  { value: 'FIFTY_THREE_FOOT_CONTAINER', label: "53' Container" },
   { value: 'FIFTY_THREE_FOOT_REEFER_TRUCK', label: "53' Reefer" },
   { value: 'TWENTY_SIX_FOOT_REEFER_TRUCK', label: "26' Reefer" },
-  { value: 'FIFTY_THREE_FOOT_CONTAINER', label: "53' Container" },
-  { value: 'TWENTY_FOOT_CONTAINER', label: "20' Container" },
-  { value: 'FORTY_FOOT_CONTAINER', label: "40' Container" },
   { value: 'FORTY_FIVE_FOOT_CONTAINER', label: "45' Container" },
-  { value: 'FORTY_FOOT_HIGHCUBE_CONTAINER', label: "40' HC Container" },
+  { value: 'FORTY_FOOT_CONTAINER', label: "40' Container" },
+  { value: 'TWENTY_FOOT_CONTAINER', label: "20' Container" },
   { value: 'FORTY_FIVE_FOOT_HIGHCUBE_CONTAINER', label: "45' HC Container" },
+  { value: 'FORTY_FOOT_HIGHCUBE_CONTAINER', label: "40' HC Container" },
+  { value: 'TWENTY_SIX_FOOT_BOX_TRUCK', label: "26' Truck" },
+  { value: 'CUBE_TRUCK', label: "16' Cube Truck" },
 ];
 
 const stopOptions = [
@@ -84,13 +94,70 @@ export default function Panel({
       console.error('key is required');
       return;
     }
-    console.log({ key, value });
+
+    if (key === 'equipmentTypeFiltersForTags') {
+      handleEquipmentFilterChange(value);
+      return;
+    } else if (key == 'endCityRadius') {
+      handleEndCityRadiusChange(value);
+      return;
+    }
+
     const newFilter = {
       ...filter,
       payload: { ...filter.payload, [key]: value },
     };
     console.log({ newFilter });
     setFilter(newFilter);
+  };
+
+  const handleEndCityRadiusChange = (value: number) => {
+    const temp = { ...filter };
+    if (temp.payload.multiselectDestinationCitiesRadiusFilters) {
+      const endCities: IDestinationCity[] = JSON.parse(
+        temp.payload.multiselectDestinationCitiesRadiusFilters
+      );
+      const newEndCities = endCities.map((item) => {
+        return { ...item, radius: value };
+      });
+      filter.payload.multiselectDestinationCitiesRadiusFilters =
+        JSON.stringify(newEndCities);
+    }
+
+    temp.payload.endCityRadius = value;
+    setFilter(temp);
+  };
+
+  const handleEquipmentFilterChange = (values: string[]) => {
+    const temp = { ...filter };
+    temp.payload.equipmentTypeFilters = [...values];
+
+    // if 53' is selected, add other 53' equipment types
+    if (values.includes('FIFTY_THREE_FOOT_TRUCK')) {
+      [
+        'SKIRTED_FIFTY_THREE_FOOT_TRUCK',
+        'FIFTY_THREE_FOOT_DRY_VAN',
+        'FIFTY_THREE_FOOT_A5_AIR_TRAILER',
+        'FORTY_FIVE_FOOT_TRUCK',
+      ].forEach((item) => {
+        temp.payload.equipmentTypeFilters.push(item);
+      });
+      // if 53' reefer is selected, add other 53' reefer equipment types
+    } else if (values.includes('FIFTY_THREE_FOOT_REEFER_TRUCK')) {
+      [
+        'FIFTY_THREE_FOOT_AMBIENT_REEFER_TRUCK',
+        'FIFTY_THREE_FOOT_FROZEN_TRUCK',
+      ].forEach((item) => {
+        temp.payload.equipmentTypeFilters.push(item);
+      });
+    }
+
+    temp.payload.equipmentTypeFiltersForTags = values;
+    temp.payload.equipmentTypeFilters = _.uniq(
+      temp.payload.equipmentTypeFilters
+    );
+
+    setFilter(temp);
   };
 
   const handleOriginChange = (origin: IOriginRelay) => {
@@ -206,7 +273,7 @@ export default function Panel({
                                     />
                                   </div>
                                 </div>
-                                <div className='sm:col-span-full'>
+                                <div className='sm:col-span-5'>
                                   <label
                                     htmlFor='origin-city'
                                     className='block text-sm font-medium leading-6 text-gray-900'
@@ -222,6 +289,40 @@ export default function Panel({
                                       onChangeFilterPayload={
                                         handleChangeFilterPayload
                                       }
+                                      selectedEndCityRadius={
+                                        filter.payload.endCityRadius || 25
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className='sm:col-span-1'>
+                                  <label
+                                    htmlFor='radius'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Radius
+                                  </label>
+                                  <div className='mt-2'>
+                                    <input
+                                      type='number'
+                                      name='radius'
+                                      id='radius'
+                                      value={filter.payload.endCityRadius || ''}
+                                      onChange={(e) =>
+                                        handleChangeFilterPayload(
+                                          'endCityRadius',
+                                          parseInt(e.target.value)
+                                        )
+                                      }
+                                      disabled={
+                                        filter.payload
+                                          .multiselectDestinationCitiesRadiusFilters ===
+                                          null ||
+                                        filter.payload
+                                          .multiselectDestinationCitiesRadiusFilters
+                                          .length === 0
+                                      }
+                                      className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
                                     />
                                   </div>
                                 </div>
@@ -367,7 +468,7 @@ export default function Panel({
                                     htmlFor='minDistance'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Min Mileage
+                                    Trip Min Distance (mile)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -390,7 +491,7 @@ export default function Panel({
                                     htmlFor='maxDistance'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Max Mileage
+                                    Trip Max Distance (mile)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -413,7 +514,7 @@ export default function Panel({
                                     htmlFor='minimumDurationInMillis'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Min Duration (hours)
+                                    Trip Min Duration (hours)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -445,7 +546,7 @@ export default function Panel({
                                     htmlFor='maximumDurationInMillis'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
-                                    Max Duration (hours)
+                                    Trip Max Duration (hours)
                                   </label>
                                   <div className='mt-2'>
                                     <input
@@ -474,46 +575,6 @@ export default function Panel({
                                 </div>
                                 <div className='sm:col-span-3'>
                                   <label
-                                    htmlFor='equipment'
-                                    className='block text-sm font-medium leading-6 text-gray-900'
-                                  >
-                                    Equipment
-                                  </label>
-                                  <div className='mt-2'>
-                                    <MultiSelect
-                                      selectedValues={
-                                        filter.payload.equipmentTypeFilters
-                                      }
-                                      type='equipmentTypeFilters'
-                                      onChangeFilterPayload={
-                                        handleChangeFilterPayload
-                                      }
-                                      options={equipmentOptions}
-                                    />
-                                  </div>
-                                </div>
-                                <div className='sm:col-span-3'>
-                                  <label
-                                    htmlFor='workType'
-                                    className='block text-sm font-medium leading-6 text-gray-900'
-                                  >
-                                    Work Type
-                                  </label>
-                                  <div className='mt-2'>
-                                    <MultiSelect
-                                      selectedValues={
-                                        filter.payload.workOpportunityTypeList
-                                      }
-                                      type='workOpportunityTypeList'
-                                      onChangeFilterPayload={
-                                        handleChangeFilterPayload
-                                      }
-                                      options={workTypeOptions}
-                                    />
-                                  </div>
-                                </div>
-                                <div className='sm:col-span-2'>
-                                  <label
                                     htmlFor='trailerStatus'
                                     className='block text-sm font-medium leading-6 text-gray-900'
                                   >
@@ -538,6 +599,48 @@ export default function Panel({
                                           label: 'Required',
                                         },
                                       ]}
+                                    />
+                                  </div>
+                                </div>
+                                <div className='sm:col-span-3'>
+                                  <label
+                                    htmlFor='equipment'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Equipment
+                                  </label>
+                                  <div className='mt-2'>
+                                    <MultiSelect
+                                      selectedValues={
+                                        filter.payload
+                                          .equipmentTypeFiltersForTags
+                                      }
+                                      type='equipmentTypeFiltersForTags'
+                                      onChangeFilterPayload={
+                                        handleChangeFilterPayload
+                                      }
+                                      options={equipmentOptions}
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className='sm:col-span-2'>
+                                  <label
+                                    htmlFor='workType'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Work Type
+                                  </label>
+                                  <div className='mt-2'>
+                                    <MultiSelect
+                                      selectedValues={
+                                        filter.payload.workOpportunityTypeList
+                                      }
+                                      type='workOpportunityTypeList'
+                                      onChangeFilterPayload={
+                                        handleChangeFilterPayload
+                                      }
+                                      options={workTypeOptions}
                                     />
                                   </div>
                                 </div>
@@ -582,6 +685,133 @@ export default function Panel({
                                     />
                                   </div>
                                 </div>
+                                <p className='col-span-full block text-lg font-bold text-gray-900'>
+                                  Fasty Advance Settings
+                                </p>
+                                <div className='sm:col-span-2'>
+                                  <label
+                                    htmlFor='currentBookCount'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Current Book Count
+                                  </label>
+                                  <div className='mt-2'>
+                                    <input
+                                      type='number'
+                                      name='currentBookCount'
+                                      id='currentBookCount'
+                                      value={filter.currentBookCount}
+                                      onChange={(e) =>
+                                        handleChangeFilter(
+                                          'currentBookCount',
+                                          parseInt(e.target.value)
+                                        )
+                                      }
+                                      className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
+                                    />
+                                  </div>
+                                </div>
+                                <div className='sm:col-span-2'>
+                                  <label
+                                    htmlFor='currentBookCount'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Book Limit Count
+                                  </label>
+                                  <div className='mt-2'>
+                                    <input
+                                      type='number'
+                                      name='bookLimit'
+                                      id='bookLimit'
+                                      value={filter.bookLimit}
+                                      onChange={(e) =>
+                                        handleChangeFilter(
+                                          'bookLimit',
+                                          parseInt(e.target.value)
+                                        )
+                                      }
+                                      className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-900 sm:text-sm sm:leading-6'
+                                    />
+                                  </div>
+                                </div>
+                                <div className='sm:col-span-2'>
+                                  <label
+                                    htmlFor='testMode'
+                                    className='block text-sm font-medium leading-6 text-gray-900'
+                                  >
+                                    Test Mode
+                                  </label>
+                                  <div className='mt-2'>
+                                    <Switch
+                                      checked={filter.isTestMode}
+                                      onChange={() =>
+                                        handleChangeFilter(
+                                          'isTestMode',
+                                          !filter.isTestMode
+                                        )
+                                      }
+                                      className={classNames(
+                                        filter.isTestMode
+                                          ? 'bg-red-900'
+                                          : 'bg-gray-200',
+                                        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2'
+                                      )}
+                                    >
+                                      <span className='sr-only'>
+                                        Use setting
+                                      </span>
+                                      <span
+                                        className={classNames(
+                                          filter.isTestMode
+                                            ? 'translate-x-5'
+                                            : 'translate-x-0',
+                                          'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                                        )}
+                                      >
+                                        <span
+                                          className={classNames(
+                                            filter.isTestMode
+                                              ? 'opacity-0 duration-100 ease-out'
+                                              : 'opacity-100 duration-200 ease-in',
+                                            'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                                          )}
+                                          aria-hidden='true'
+                                        >
+                                          <svg
+                                            className='h-3 w-3 text-gray-400'
+                                            fill='none'
+                                            viewBox='0 0 12 12'
+                                          >
+                                            <path
+                                              d='M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2'
+                                              stroke='currentColor'
+                                              strokeWidth={2}
+                                              strokeLinecap='round'
+                                              strokeLinejoin='round'
+                                            />
+                                          </svg>
+                                        </span>
+                                        <span
+                                          className={classNames(
+                                            filter.isTestMode
+                                              ? 'opacity-100 duration-200 ease-in'
+                                              : 'opacity-0 duration-100 ease-out',
+                                            'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                                          )}
+                                          aria-hidden='true'
+                                        >
+                                          <svg
+                                            className='h-3 w-3 text-red-900'
+                                            fill='currentColor'
+                                            viewBox='0 0 12 12'
+                                          >
+                                            <path d='M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z' />
+                                          </svg>
+                                        </span>
+                                      </span>
+                                    </Switch>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -601,7 +831,7 @@ export default function Panel({
                           <button
                             onClick={onHandleSubmit}
                             // type="submit"
-                            className='inline-flex justify-center rounded-md bg-red-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900'
+                            className='inline-flex justify-center rounded-md bg-red-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900'
                           >
                             Save
                           </button>

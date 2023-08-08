@@ -19,6 +19,21 @@ export default function Example() {
     setFilters(response.data);
   };
 
+  const startFilter = async (filter: IFilter) => {
+    const res = await api.put(`/filter/${filter.id}`, {
+      status: FilterStatus.ACTIVE,
+    });
+
+    await fetchFilters();
+  };
+
+  const stopFilter = async (filter: IFilter) => {
+    await api.put(`/filter/${filter.id}`, {
+      status: FilterStatus.PAUSED,
+    });
+    await fetchFilters();
+  };
+
   useEffect(() => {
     fetchFilters();
   }, []);
@@ -157,24 +172,24 @@ export default function Example() {
                       )}
                     </td>
 
-                    <td
-                      onClick={() => handleOpenPanel(filter)}
-                      className='relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'
-                    >
+                    <td className='relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                       <div className='flex flex-row'>
                         {' '}
                         {filter.status === FilterStatus.ACTIVE ? (
                           <PauseIcon
                             className='h-6 w-6 text-red-900 group-hover:text-gray-900 cursor-pointer'
                             aria-hidden='true'
+                            onClick={() => stopFilter(filter)}
                           />
                         ) : (
                           <PlayIcon
                             className='h-6 w-6 text-red-900 group-hover:text-gray-900 cursor-pointer'
                             aria-hidden='true'
+                            onClick={() => startFilter(filter)}
                           />
                         )}
                         <PencilIcon
+                          onClick={() => handleOpenPanel(filter)}
                           className='h-6 w-5 ml-5 text-red-900 group-hover:text-gray-900 cursor-pointer'
                           aria-hidden='true'
                         />
