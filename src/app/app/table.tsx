@@ -5,6 +5,7 @@ import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { FilterStatus, IFilter } from '@/types';
 import api from '@/utils/api';
 import Snackbar from '@/components/snackbar';
+import { useRouter } from 'next/navigation';
 
 const initialFilter: IFilter = {
   name: '',
@@ -78,6 +79,8 @@ export default function Example() {
   const [selectedFilter, setSelectedFilter] = useState<IFilter>(initialFilter);
   const [filters, setFilters] = useState<IFilter[]>([]);
   const [snackbar, setSnackbar] = useState(false);
+
+  const router = useRouter();
   const handleOpenEditPanel = (filter: IFilter) => {
     setPanelType('edit');
     setSelectedFilter(filter);
@@ -96,6 +99,11 @@ export default function Example() {
 
   const fetchFilters = async () => {
     const response = await api.get('/filter');
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      router.push('/login');
+      return;
+    }
     setFilters(response.data);
   };
 
