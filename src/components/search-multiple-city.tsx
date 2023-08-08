@@ -4,6 +4,7 @@ import { Combobox } from '@headlessui/react';
 import _ from 'lodash';
 import { ICity, IDestinationCity, IFilterPayload } from '@/types';
 import { castCityToDestination, formatCityName } from '@/utils/helper';
+import { API_ENDPOINT } from '@/utils/constants';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -42,9 +43,7 @@ export default function SearchMultipleCity({
     }
 
     setLoading(true);
-    const response = await fetch(
-      `http://localhost:3002/city/search?name=${value}`
-    );
+    const response = await fetch(`${API_ENDPOINT}/city/search?name=${value}`);
     const data = await response.json();
     setFilteredCities(data);
     setLoading(false);
