@@ -4,6 +4,7 @@ import { convertToLosAngeles } from '@/utils/helper';
 import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { FilterStatus, IFilter } from '@/types';
 import api from '@/utils/api';
+import Snackbar from '@/components/snackbar';
 
 const initialFilter: IFilter = {
   name: '',
@@ -76,6 +77,7 @@ export default function Example() {
   const [panelType, setPanelType] = useState<'add' | 'edit'>('add');
   const [selectedFilter, setSelectedFilter] = useState<IFilter>(initialFilter);
   const [filters, setFilters] = useState<IFilter[]>([]);
+  const [snackbar, setSnackbar] = useState(false);
   const handleOpenEditPanel = (filter: IFilter) => {
     setPanelType('edit');
     setSelectedFilter(filter);
@@ -101,15 +103,24 @@ export default function Example() {
     const res = await api.put(`/filter/${filter.id}`, {
       status: FilterStatus.ACTIVE,
     });
-
-    await fetchFilters();
+    if (res.status === 200) {
+      setSnackbar(true);
+      await fetchFilters();
+    } else {
+      alert('Something went wrong');
+    }
   };
 
   const stopFilter = async (filter: IFilter) => {
-    await api.put(`/filter/${filter.id}`, {
+    const res = await api.put(`/filter/${filter.id}`, {
       status: FilterStatus.PAUSED,
     });
-    await fetchFilters();
+    if (res.status === 200) {
+      setSnackbar(true);
+      await fetchFilters();
+    } else {
+      alert('Something went wrong');
+    }
   };
 
   useEffect(() => {
@@ -290,6 +301,7 @@ export default function Example() {
           panelType={panelType}
         />
       )}
+      <Snackbar show={snackbar} setShow={setSnackbar} />
     </div>
   );
 }
