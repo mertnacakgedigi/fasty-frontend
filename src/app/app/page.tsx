@@ -97,11 +97,19 @@ export default function Example() {
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className='flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2'>
                     <div className='flex h-16 shrink-0 items-center'>
-                      <img
-                        className='h-8 w-auto'
-                        src='https://tailwindui.com/img/logos/mark.svg?color=red&shade=900'
-                        alt='Your Company'
-                      />
+                      <div className='flex items-center flex-row justify-center'>
+                        <img
+                          src='./images/icon.svg'
+                          className='object-fill h-20 sm:h-20 scale-150'
+                          alt='Fasty Logo'
+                        />
+                        <span className='self-center text-xl font-semibold whitespace-nowrap'>
+                          Fasty
+                        </span>
+                      </div>
+                      <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>
+                        Welcome back!
+                      </h2>
                     </div>
                     <nav className='flex flex-1 flex-col'>
                       <ul role='list' className='flex flex-1 flex-col gap-y-7'>
@@ -146,12 +154,15 @@ export default function Example() {
         <div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className='flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
-            <div className='flex h-16 shrink-0 items-center'>
+            <div className='flex flex-row mt-5 shrink-0'>
               <img
-                className='h-8 w-auto'
-                src='https://tailwindui.com/img/logos/mark.svg?color=red&shade=900'
-                alt='Your Company'
+                src='./images/icon.svg'
+                className='object-fill h-14 sm:h-14 scale-150'
+                alt='Fasty Logo'
               />
+              <span className='self-center text-xl font-semibold whitespace-nowrap'>
+                Fasty
+              </span>
             </div>
             <nav className='flex flex-1 flex-col'>
               <ul role='list' className='flex flex-1 flex-col gap-y-7'>

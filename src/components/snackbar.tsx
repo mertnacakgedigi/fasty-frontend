@@ -5,11 +5,18 @@ import { XMarkIcon } from '@heroicons/react/20/solid';
 
 interface IProps {
   message?: string;
+  description?: string;
   type?: 'success' | 'error';
   show: boolean;
   setShow: (val: boolean) => void;
 }
-export default function Snackbar({ message, type, show, setShow }: IProps) {
+export default function Snackbar({
+  message,
+  type,
+  show,
+  setShow,
+  description,
+}: IProps) {
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
@@ -43,7 +50,8 @@ export default function Snackbar({ message, type, show, setShow }: IProps) {
                       {message || 'Successfully saved!'}
                     </p>
                     <p className='mt-1 text-sm text-gray-500'>
-                      Your changes have been successfully saved to your account.
+                      {description ||
+                        'Your changes have been successfully saved to your account.'}
                     </p>
                   </div>
                   <div className='ml-4 flex flex-shrink-0'>
