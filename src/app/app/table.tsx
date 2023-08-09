@@ -250,7 +250,7 @@ export default function Example() {
                     </td>
                     <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
                       {filter.status === FilterStatus.ACTIVE ? (
-                        <span className='inline-flex items-center gap-x-1.5 rounded-full bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-700'>
+                        <div className='inline-flex items-center gap-x-1.5 rounded-full bg-green-100 py-1 px-2 text-xs font-medium text-green-700'>
                           <svg
                             className='h-1.5 w-1.5 fill-green-500'
                             viewBox='0 0 6 6'
@@ -259,9 +259,9 @@ export default function Example() {
                             <circle cx='3' cy='3' r='3' />
                           </svg>
                           Active
-                        </span>
+                        </div>
                       ) : (
-                        <span className='inline-flex items-center gap-x-1.5 rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700'>
+                        <div className='inline-flex items-center gap-x-1.5 rounded-full bg-red-100 py-1 px-2 text-xs font-medium text-red-700'>
                           <svg
                             className='h-1.5 w-1.5 fill-red-500'
                             viewBox='0 0 6 6'
@@ -270,7 +270,17 @@ export default function Example() {
                             <circle cx='3' cy='3' r='3' />
                           </svg>
                           Paused
-                        </span>
+                        </div>
+                      )}
+
+                      {filter.isTestMode ? (
+                        <div className='ml-1 inline-flex rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-gray-200'>
+                          Test Mode
+                        </div>
+                      ) : (
+                        <div className='ml-1 inline-flex rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 text-red-900 ring-red-900'>
+                          🚀 Book Mode
+                        </div>
                       )}
                     </td>
 
