@@ -9,7 +9,7 @@ export default function Home() {
             <a href='#' className='flex items-center'>
               <img
                 src='./images/icon.svg'
-                className='object-fill h-20 sm:h-20 w-full scale-150'
+                className='object-fill h-20 sm:h-20 scale-150'
                 alt='Fasty Logo'
               />
               <span className='self-center text-xl font-semibold whitespace-nowrap'>

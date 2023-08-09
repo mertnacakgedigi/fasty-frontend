@@ -107,9 +107,6 @@ export default function Example() {
                           Fasty
                         </span>
                       </div>
-                      <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>
-                        Welcome back!
-                      </h2>
                     </div>
                     <nav className='flex flex-1 flex-col'>
                       <ul role='list' className='flex flex-1 flex-col gap-y-7'>
