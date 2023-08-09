@@ -178,7 +178,7 @@ export default function Example() {
                     scope='col'
                     className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
                   >
-                    Start Date -{'>'} End Date
+                    Start Date / End Date
                   </th>
                   <th
                     scope='col'
@@ -228,9 +228,13 @@ export default function Example() {
                     </td>
                     <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
                       <div className='text-gray-900'>
-                        {convertToLosAngeles(filter.payload.startDate, true)} -
-                        {'>'}{' '}
-                        {convertToLosAngeles(filter.payload.endDate, true)}
+                        {`${convertToLosAngeles(
+                          filter.payload.startDate,
+                          true
+                        )}`}
+                      </div>
+                      <div className='mt-1 text-gray-500'>
+                        {`${convertToLosAngeles(filter.payload.endDate, true)}`}
                       </div>
                       {/*<div className="mt-1 text-gray-500">{filter.payload.multiselectDestinationCitiesRadiusFilters && JSON.parse(filter.payload.multiselectDestinationCitiesRadiusFilters).map(des => des.cityDisplayValue)}</div>*/}
                     </td>
