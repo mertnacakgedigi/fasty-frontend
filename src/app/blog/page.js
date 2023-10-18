@@ -45,15 +45,15 @@ export default function Blog() {
           and transportation sector is no exception. The Amazon Relay Loadboard,
           an integral platform for freight carriers, has seen a surge in
           automated solutions. But why is it increasingly crucial for carriers
-          to adopt automated software or bots for booking loads? Let's delve
-          deeper.
+          to adopt automated software or bots for booking loads? Let&apos;s
+          delve deeper.
         </p>
         <h2 className={styles.subTitle}>The Speed Advantage</h2>
         <p className={styles.paragraph}>
           Bots operate at lightning speeds compared to manual processes. When
           loads get posted on the Amazon Relay Loadboard, they might be gone in
-          a matter of seconds, especially the high-paying ones. If you're
-          manually searching and booking, you're likely missing out. With
+          a matter of seconds, especially the high-paying ones. If you&apos;re
+          manually searching and booking, you&apos;re likely missing out. With
           automated bots, you can secure these profitable opportunities in an
           instant
         </p>
@@ -62,8 +62,8 @@ export default function Blog() {
           Not all loads are created equal. Bots, especially those designed with
           advanced algorithms, can quickly filter and select the most profitable
           loads based on parameters set by the carrier. This ensures that
-          carriers aren't just getting any load but the ones that maximize their
-          ROI.
+          carriers aren&apos;t just getting any load but the ones that maximize
+          their ROI.
         </p>
         <h2 className={styles.subTitle}>
           Not Seeing Loads? Bots to the Rescue
@@ -73,35 +73,36 @@ export default function Blog() {
           some loads on the Amazon Relay Loadboard. Some of the most profitable
           loads might be snatched away before they even appear for manual
           viewers. This phenomenon is due to the sheer speed and efficiency of
-          bots. If you're not using one, you're essentially competing with a
-          supercomputer for these loads. With a bot by your side, you ensure
-          you're in the game.
+          bots. If you&apos;re not using one, you&apos;re essentially competing
+          with a supercomputer for these loads. With a bot by your side, you
+          ensure you&apos;re in the game.
         </p>
         <h2 className={styles.subTitle}>Consistency and Reliability</h2>
         <p className={styles.paragraph}>
-          Bots don't get tired, don't need breaks, and don't make human errors.
-          Once set with the right parameters, they offer consistent performance,
-          ensuring carriers get consistent results. This reliability can be a
-          game-changer in an industry where every load counts.
+          Bots don&apos;t get tired, don&apos;t need breaks, and don&apos;t make
+          human errors. Once set with the right parameters, they offer
+          consistent performance, ensuring carriers get consistent results. This
+          reliability can be a game-changer in an industry where every load
+          counts.
         </p>
         <h2 className={styles.subTitle}>
           Stay Ahead in the Competitive Landscape
         </h2>
         <p className={styles.paragraph}>
-          With many carriers adopting bots, those who don't are at a significant
-          disadvantage. In a fiercely competitive space like the Amazon Relay
-          Loadboard, using automated software isn't just about staying ahead;
-          it's about staying relevant.
+          With many carriers adopting bots, those who don&apos;t are at a
+          significant disadvantage. In a fiercely competitive space like the
+          Amazon Relay Loadboard, using automated software isn&apos;t just about
+          staying ahead; it&apos;s about staying relevant.
         </p>{' '}
         <h2 className={styles.subTitle}>Conclusion</h2>
         <p className={styles.paragraph}>
           The era of manual load booking on platforms like Amazon Relay
           Loadboard is dwindling. Automated software or bots bring speed,
           efficiency, and profitability to the table, elements crucial for
-          success in today's logistics landscape. If you're not leveraging bots,
-          you're likely missing out on the most profitable loads and lagging
-          behind in the race. The future belongs to automation, and bots are
-          leading the charge.
+          success in today&apos;s logistics landscape. If you&apos;re not
+          leveraging bots, you&apos;re likely missing out on the most profitable
+          loads and lagging behind in the race. The future belongs to
+          automation, and bots are leading the charge.
         </p>
         <div className={styles.keywords}>
           Keywords: Automated software, Bots, Amazon Relay Loadboard, Profitable
