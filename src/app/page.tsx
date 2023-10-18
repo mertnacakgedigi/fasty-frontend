@@ -231,11 +231,15 @@ export default function Home() {
               />
               Fasty
             </a>
+
             <span className='block text-sm text-center text-gray-500'>
               © 2023 Fasty. All Rights Reserved.
               <a href='https://storyset.com/work'>
                 Work illustrations by Storyset
               </a>
+            </span>
+            <span className='block text-md text-center text-gray-500'>
+              <a href='https://www.fastyrelay.com/blog'>Blog</a>
             </span>
           </div>
         </div>
