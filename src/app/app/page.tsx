@@ -1,243 +1,330 @@
 'use client';
+import { useEffect, useState } from 'react';
+import Panel from '@/components/panel';
+import { convertToLosAngeles } from '@/utils/helper';
+import { PencilIcon, PauseIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { FilterStatus, IFilter } from '@/types';
+import api from '@/utils/api';
+import Snackbar from '@/components/snackbar';
+import { useRouter } from 'next/navigation';
 
-import { Fragment, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import Table from './table';
-import {
-  Bars3Icon,
-  RocketLaunchIcon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
-
-const navigation = [
-  // { name: 'Dashboard', href: '#', icon: HomeIcon, current: false },
-  { name: 'Filters', href: '#', icon: RocketLaunchIcon, current: true },
-  // { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  // { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-  // { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
+const initialFilter: IFilter = {
+  name: '',
+  status: FilterStatus.PAUSED,
+  bookLimit: 1,
+  currentBookCount: 0,
+  lastBookedAt: null,
+  bookLimitInterval: 0,
+  blockStartTime: null,
+  blockEndTime: null,
+  isTestMode: true,
+  payload: {
+    workOpportunityTypeList: ['ONE_WAY'],
+    originCity: null,
+    startCityName: null,
+    startCityStateCode: null,
+    startCityLatitude: null,
+    startCityLongitude: null,
+    startCityDisplayValue: null,
+    isOriginCityLive: false,
+    startCityRadius: 50,
+    destinationCity: null,
+    multiselectDestinationCitiesRadiusFilters: null,
+    exclusionCitiesFilter: null,
+    endCityName: null,
+    endCityStateCode: null,
+    endCityDisplayValue: null,
+    endCityLatitude: null,
+    endCityLongitude: null,
+    isDestinationCityLive: null,
+    endCityRadius: null,
+    startDate: null,
+    endDate: null,
+    minDistance: null,
+    maxDistance: null,
+    minimumDurationInMillis: null,
+    maximumDurationInMillis: null,
+    minPayout: null,
+    minPricePerDistance: null,
+    trailerStatusFilters: ['PROVIDED'],
+    equipmentTypeFilters: [
+      'FIFTY_THREE_FOOT_TRUCK',
+      'SKIRTED_FIFTY_THREE_FOOT_TRUCK',
+      'FIFTY_THREE_FOOT_DRY_VAN',
+      'FIFTY_THREE_FOOT_A5_AIR_TRAILER',
+      'FORTY_FIVE_FOOT_TRUCK',
+    ],
+    equipmentTypeFiltersForTags: ['FIFTY_THREE_FOOT_TRUCK'],
+    driverTypeFilters: [],
+    uiiaCertificationsFilter: [],
+    workOpportunityOperatingRegionFilter: [],
+    loadingTypeFilters: [],
+    maximumNumberOfStops: null,
+    workOpportunityAccessType: null,
+    sortByField: 'startTime',
+    sortOrder: 'asc',
+    visibilityStatusType: 'ALL',
+    nextItemToken: 0,
+    resultSize: 50,
+    searchURL: '',
+    isAutoRefreshCall: false,
+    notificationId: '',
+    auditContextMap:
+      '{"rlbChannel":"EXACT_MATCH","isOriginCityLive":"false","isDestinationCityLive":"false","source":"AVAILABLE_WORK"}',
+  },
+};
 
 export default function Example() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [panelType, setPanelType] = useState<'add' | 'edit'>('add');
+  const [selectedFilter, setSelectedFilter] = useState<IFilter>(initialFilter);
+  const [filters, setFilters] = useState<IFilter[]>([]);
+  const [snackbar, setSnackbar] = useState(false);
+
+  const router = useRouter();
+  const handleOpenEditPanel = (filter: IFilter) => {
+    setPanelType('edit');
+    setSelectedFilter(filter);
+    setOpen(true);
+  };
+
+  const handleOpenAddPanel = () => {
+    setPanelType('add');
+    setOpen(true);
+  };
+
+  const handleClosePanel = () => {
+    setOpen(false);
+    setSelectedFilter(initialFilter);
+  };
+
+  const fetchFilters = async () => {
+    const response = await api.get('/filter');
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      router.push('/login');
+      return;
+    }
+    setFilters(response.data);
+  };
+
+  const startFilter = async (filter: IFilter) => {
+    const res = await api.put(`/filter/${filter.id}`, {
+      status: FilterStatus.ACTIVE,
+    });
+    if (res.status === 200) {
+      setSnackbar(true);
+      await fetchFilters();
+    } else {
+      alert('Something went wrong');
+    }
+  };
+
+  const stopFilter = async (filter: IFilter) => {
+    const res = await api.put(`/filter/${filter.id}`, {
+      status: FilterStatus.PAUSED,
+    });
+    if (res.status === 200) {
+      setSnackbar(true);
+      await fetchFilters();
+    } else {
+      alert('Something went wrong');
+    }
+  };
+
+  useEffect(() => {
+    fetchFilters();
+  }, []);
 
   return (
-    <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-50">
-        <body class="h-full">
-        ```
-      */}
-      <div>
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog
-            as='div'
-            className='relative z-50 lg:hidden'
-            onClose={setSidebarOpen}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter='transition-opacity ease-linear duration-300'
-              enterFrom='opacity-0'
-              enterTo='opacity-100'
-              leave='transition-opacity ease-linear duration-300'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0'
-            >
-              <div className='fixed inset-0 bg-gray-900/80' />
-            </Transition.Child>
-
-            <div className='fixed inset-0 flex'>
-              <Transition.Child
-                as={Fragment}
-                enter='transition ease-in-out duration-300 transform'
-                enterFrom='-translate-x-full'
-                enterTo='translate-x-0'
-                leave='transition ease-in-out duration-300 transform'
-                leaveFrom='translate-x-0'
-                leaveTo='-translate-x-full'
-              >
-                <Dialog.Panel className='relative mr-16 flex w-full max-w-xs flex-1'>
-                  <Transition.Child
-                    as={Fragment}
-                    enter='ease-in-out duration-300'
-                    enterFrom='opacity-0'
-                    enterTo='opacity-100'
-                    leave='ease-in-out duration-300'
-                    leaveFrom='opacity-100'
-                    leaveTo='opacity-0'
-                  >
-                    <div className='absolute left-full top-0 flex w-16 justify-center pt-5'>
-                      <button
-                        type='button'
-                        className='-m-2.5 p-2.5'
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        <span className='sr-only'>Close sidebar</span>
-                        <XMarkIcon
-                          className='h-6 w-6 text-white'
-                          aria-hidden='true'
-                        />
-                      </button>
-                    </div>
-                  </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className='flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2'>
-                    <div className='flex h-16 shrink-0 items-center'>
-                      <div className='flex items-center flex-row justify-center'>
-                        <img
-                          src='./images/icon.svg'
-                          className='object-fill h-20 sm:h-20 scale-150'
-                          alt='Fasty Logo'
-                        />
-                        <span className='self-center text-xl font-semibold whitespace-nowrap'>
-                          Fasty
-                        </span>
-                      </div>
-                    </div>
-                    <nav className='flex flex-1 flex-col'>
-                      <ul role='list' className='flex flex-1 flex-col gap-y-7'>
-                        <li>
-                          <ul role='list' className='-mx-2 space-y-1'>
-                            {navigation.map((item) => (
-                              <li key={item.name}>
-                                <a
-                                  href={item.href}
-                                  className={classNames(
-                                    item.current
-                                      ? 'bg-gray-50 text-red-900'
-                                      : 'text-gray-700 hover:text-red-900 hover:bg-gray-50',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                  )}
-                                >
-                                  <item.icon
-                                    className={classNames(
-                                      item.current
-                                        ? 'text-red-900'
-                                        : 'text-gray-400 group-hover:text-red-900',
-                                      'h-6 w-6 shrink-0'
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                  {item.name}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </Dialog>
-        </Transition.Root>
-
-        {/* Static sidebar for desktop */}
-        <div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className='flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
-            <div className='flex flex-row mt-5 shrink-0'>
-              <img
-                src='./images/icon.svg'
-                className='object-fill h-14 sm:h-14 scale-150'
-                alt='Fasty Logo'
-              />
-              <span className='self-center text-xl font-semibold whitespace-nowrap'>
-                Fasty
-              </span>
-            </div>
-            <nav className='flex flex-1 flex-col'>
-              <ul role='list' className='flex flex-1 flex-col gap-y-7'>
-                <li>
-                  <ul role='list' className='-mx-2 space-y-1'>
-                    {navigation.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? 'bg-gray-50 text-red-900'
-                              : 'text-gray-700 hover:text-red-900 hover:bg-gray-50',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                          )}
-                        >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? 'text-red-900'
-                                : 'text-gray-400 group-hover:text-red-900',
-                              'h-6 w-6 shrink-0'
-                            )}
-                            aria-hidden='true'
-                          />
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                {/*<li className='-mx-6 mt-auto'>*/}
-                {/*  <a*/}
-                {/*    href='#'*/}
-                {/*    className='flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50'*/}
-                {/*  >*/}
-                {/*    <img*/}
-                {/*      className='h-8 w-8 rounded-full bg-gray-50'*/}
-                {/*      src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'*/}
-                {/*      alt=''*/}
-                {/*    />*/}
-                {/*    <span className='sr-only'>Your profile</span>*/}
-                {/*    <span aria-hidden='true'>Red Eye</span>*/}
-                {/*  </a>*/}
-                {/*</li>*/}
-              </ul>
-            </nav>
-          </div>
+    <div className='px-4 sm:px-6 lg:px-8'>
+      <div className='sm:flex sm:items-center'>
+        <div className='sm:flex-auto'>
+          <h1 className='text-lg font-semibold leading-6 text-gray-900'>
+            Filters
+          </h1>
+          <p className='mt-2 text-sm text-gray-700'>
+            Manage your filters to book loads faster
+          </p>
         </div>
-
-        <div className='sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden'>
+        <div className='mt-4 sm:ml-16 sm:mt-0 sm:flex-none'>
           <button
             type='button'
-            className='-m-2.5 p-2.5 text-gray-700 lg:hidden'
-            onClick={() => setSidebarOpen(true)}
+            onClick={handleOpenAddPanel}
+            className='block rounded-md bg-red-900 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-grey-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-900'
           >
-            <span className='sr-only'>Open sidebar</span>
-            <Bars3Icon className='h-6 w-6' aria-hidden='true' />
+            Add filter
           </button>
-          <div className='flex-1 text-sm font-semibold leading-6 text-gray-900'>
-            Dashboard
-          </div>
-          <a href='#'>
-            <span className='sr-only'>Your profile</span>
-            <img
-              className='h-8 w-8 rounded-full bg-gray-50'
-              src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-              alt=''
-            />
-          </a>
         </div>
-
-        <main className='py-10 lg:pl-72'>
-          <div className='px-4 sm:px-6 lg:px-8'>
-            <Table />
-          </div>
-        </main>
       </div>
-    </>
+      <div className='mt-8 flow-root'>
+        <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+            <table className='min-w-full divide-y divide-gray-300'>
+              <thead>
+                <tr>
+                  <th
+                    scope='col'
+                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope='col'
+                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+                  >
+                    Origin -{'>'} Destination
+                  </th>
+                  <th
+                    scope='col'
+                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+                  >
+                    Start Date / End Date
+                  </th>
+                  <th
+                    scope='col'
+                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+                  >
+                    Min Payment
+                  </th>
+                  <th
+                    scope='col'
+                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+                  >
+                    Status
+                  </th>
+                  <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
+                    <span className='sr-only'>Edit</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-gray-200 bg-white'>
+                {filters.map((filter) => (
+                  <tr key={filter.id}>
+                    <td className='whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0'>
+                      <div className='flex items-center'>
+                        {/*<div className="h-11 w-11 flex-shrink-0">*/}
+                        {/*  <img className="h-11 w-11 rounded-full" src={person.image} alt="" />*/}
+                        {/*</div>*/}
+                        <div>
+                          <div className='font-medium text-gray-900'>
+                            {filter.name}
+                          </div>
+                          {/*<div className="mt-1 text-gray-500">{filter.email}</div>*/}
+                        </div>
+                      </div>
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
+                      <div className='text-gray-900'>
+                        {filter.payload.startCityDisplayValue} -{'>'}{' '}
+                        {filter.payload
+                          .multiselectDestinationCitiesRadiusFilters
+                          ? JSON.parse(
+                              filter.payload
+                                .multiselectDestinationCitiesRadiusFilters
+                            ).map((des: any) => des.cityDisplayValue)
+                          : 'Anywhere'}
+                      </div>
+                      {/*<div className="mt-1 text-gray-500">{filter.payload.multiselectDestinationCitiesRadiusFilters && JSON.parse(filter.payload.multiselectDestinationCitiesRadiusFilters).map(des => des.cityDisplayValue)}</div>*/}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
+                      <div className='text-gray-900'>
+                        {`${convertToLosAngeles(
+                          filter.payload.startDate,
+                          true
+                        )}`}
+                      </div>
+                      <div className='mt-1 text-gray-500'>
+                        {`${convertToLosAngeles(filter.payload.endDate, true)}`}
+                      </div>
+                      {/*<div className="mt-1 text-gray-500">{filter.payload.multiselectDestinationCitiesRadiusFilters && JSON.parse(filter.payload.multiselectDestinationCitiesRadiusFilters).map(des => des.cityDisplayValue)}</div>*/}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
+                      <div className='font-medium text-gray-900'>
+                        ${filter.payload.minPayout}
+                      </div>
+                      <div className='mt-1 text-gray-500'>
+                        {' '}
+                        {filter.payload.minPricePerDistance &&
+                          `${filter.payload.minPricePerDistance} / mi`}
+                      </div>
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-5 text-sm text-gray-500'>
+                      {filter.status === FilterStatus.ACTIVE ? (
+                        <div className='inline-flex items-center gap-x-1.5 rounded-full bg-green-100 py-1 px-2 text-xs font-medium text-green-700'>
+                          <svg
+                            className='h-1.5 w-1.5 fill-green-500'
+                            viewBox='0 0 6 6'
+                            aria-hidden='true'
+                          >
+                            <circle cx='3' cy='3' r='3' />
+                          </svg>
+                          Active
+                        </div>
+                      ) : (
+                        <div className='inline-flex items-center gap-x-1.5 rounded-full bg-red-100 py-1 px-2 text-xs font-medium text-red-700'>
+                          <svg
+                            className='h-1.5 w-1.5 fill-red-500'
+                            viewBox='0 0 6 6'
+                            aria-hidden='true'
+                          >
+                            <circle cx='3' cy='3' r='3' />
+                          </svg>
+                          Paused
+                        </div>
+                      )}
+
+                      {filter.isTestMode ? (
+                        <div className='ml-1 inline-flex rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-gray-200'>
+                          Test Mode
+                        </div>
+                      ) : (
+                        <div className='ml-1 inline-flex rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 text-red-900 ring-red-900'>
+                          🚀 Book Mode
+                        </div>
+                      )}
+                    </td>
+
+                    <td className='relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                      <div className='flex flex-row'>
+                        {' '}
+                        {filter.status === FilterStatus.ACTIVE ? (
+                          <PauseIcon
+                            className='h-6 w-6 text-red-900 group-hover:text-gray-900 cursor-pointer'
+                            aria-hidden='true'
+                            onClick={() => stopFilter(filter)}
+                          />
+                        ) : (
+                          <PlayIcon
+                            className='h-6 w-6 text-red-900 group-hover:text-gray-900 cursor-pointer'
+                            aria-hidden='true'
+                            onClick={() => startFilter(filter)}
+                          />
+                        )}
+                        <PencilIcon
+                          onClick={() => handleOpenEditPanel(filter)}
+                          className='h-6 w-5 ml-5 text-red-900 group-hover:text-gray-900 cursor-pointer'
+                          aria-hidden='true'
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {selectedFilter && (
+        <Panel
+          open={open}
+          onClose={handleClosePanel}
+          selectedFilter={selectedFilter}
+          onSave={fetchFilters}
+          panelType={panelType}
+        />
+      )}
+      <Snackbar show={snackbar} setShow={setSnackbar} />
+    </div>
   );
 }
